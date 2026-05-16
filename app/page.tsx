@@ -189,7 +189,7 @@ export default function Home() {
                 key={index}
                 src={image}
                 alt={`Ressential gallery ${index + 1}`}
-                className="h-[420px] w-[330px] flex-none rounded-[2.5rem] object-cover shadow-md transition duration-500 hover:scale-105"
+                className="h-[280px] w-[220px] md:h-[420px] md:w-[330px] flex-none rounded-[2.5rem] object-cover shadow-md transition duration-500 hover:scale-105"
               />
             ))}
           </div>
@@ -271,7 +271,7 @@ export default function Home() {
       </section>
 
       <footer className="mt-24 border-t border-[#d8c8b6] bg-[#f6f0e8]">
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-4">
     
           <div>
             <h3 className="text-3xl font-semibold text-[#2b211d]">
