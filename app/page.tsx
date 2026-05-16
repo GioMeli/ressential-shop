@@ -269,6 +269,94 @@ export default function Home() {
           </form>
         </div>
       </section>
+
+      <footer className="mt-24 border-t border-[#d8c8b6] bg-[#f6f0e8]">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-4">
+    
+          <div>
+            <h3 className="text-3xl font-semibold text-[#2b211d]">
+              Ressential ✨
+            </h3>
+
+            <p className="mt-5 leading-7 text-[#6f625b]">
+              Handmade resin art and luxury soy candle creations crafted
+              with elegance, emotion and premium detail.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="mb-5 text-lg font-semibold text-[#2b211d]">
+              Navigation
+            </h4>
+
+            <ul className="space-y-3 text-[#6f625b]">
+              <li>
+                <a href="#shop" className="hover:text-black">
+                  Shop
+                </a>
+              </li>
+
+              <li>
+                <a href="#gallery" className="hover:text-black">
+                  Gallery
+                </a>
+              </li>
+
+              <li>
+                <a href="#contact" className="hover:text-black">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-5 text-lg font-semibold text-[#2b211d]">
+              Social
+            </h4>
+
+            <ul className="space-y-3 text-[#6f625b]">
+              <li>
+                <a
+                  href="https://instagram.com/ressential_experience"
+                  target="_blank"
+                  className="hover:text-black"
+                >
+                  Instagram
+                </a>
+              </li>
+
+              <li>
+                <a href="#" className="hover:text-black">
+                  TikTok
+                </a>
+              </li>
+
+              <li>
+                <a href="#" className="hover:text-black">
+                  Facebook
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-5 text-lg font-semibold text-[#2b211d]">
+              Contact
+            </h4>
+
+            <div className="space-y-3 text-[#6f625b]">
+              <p>Athens, Greece</p>
+              <p>Custom orders available</p>
+              <p>Luxury handmade gifts</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-[#d8c8b6] px-6 py-6 text-center text-sm text-[#8c7c70]">
+          © 2026 Ressential. All rights reserved.
+        </div>
+      </footer>
     </main>
   );
 }
