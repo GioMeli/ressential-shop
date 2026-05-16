@@ -1,3 +1,5 @@
+import { categories } from "@/data/categories";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
@@ -82,43 +84,48 @@ export default function Home() {
       <section id="shop" className="mx-auto max-w-7xl px-6 pb-24 pt-10">
         <div className="mb-12 text-center">
           <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#b08a5b]">
-            Curated Collection
+            Featured Categories
           </p>
+
           <h2 className="text-4xl font-semibold md:text-5xl">
-            Ready-made creations
+            Explore our handmade collections
           </h2>
+
+          <p className="mx-auto mt-5 max-w-2xl text-[#6f625b]">
+            Browse luxury soy candles, resin art, personalized gifts and custom
+            creations designed for meaningful moments.
+          </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            {
-              title: "Luxury Soy Candles",
-              image: "/images/candle1.jpeg",
-            },
-            {
-              title: "Personalized Resin Gifts",
-              image: "/images/resin1.jpeg",
-            },
-            {
-              title: "Wedding & Baptism Keepsakes",
-              image: "/images/gift1.jpeg",
-            },
-            ].map((item) => (
-            <div
-              key={item.title}
-              className="rounded-[2rem] border border-[#e4d2bd] bg-white/70 p-8 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {categories.map((category) => (
+            <a
+              key={category.id}
+              href={`/shop?category=${category.id}`}
+              className="group overflow-hidden rounded-[2.5rem] border border-[#e4d2bd] bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
             >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="mb-6 h-56 w-full rounded-[1.5rem] object-cover"
-              />
-              <h3 className="text-2xl font-semibold">{item.title}</h3>
-              <p className="mt-3 text-[#6f625b]">
-                Elegant handmade pieces designed for meaningful gifting and
-                timeless decoration.
-              </p>
-            </div>
+              <div className="overflow-hidden">
+                <img
+                  src={category.image}
+                  alt={category.title}
+                  className="h-[300px] w-full object-cover transition duration-700 group-hover:scale-110"
+                />
+              </div>
+
+              <div className="p-7">
+                <h3 className="text-3xl font-semibold text-[#2b211d]">
+                  {category.title}
+                </h3>
+
+                <p className="mt-4 leading-7 text-[#6f625b]">
+                  {category.description}
+                </p>
+
+                <span className="mt-7 inline-block rounded-full bg-[#2b211d] px-6 py-3 text-sm font-semibold uppercase tracking-widest text-white">
+                  Explore Collection
+                </span>
+              </div>
+            </a>
           ))}
         </div>
       </section>
