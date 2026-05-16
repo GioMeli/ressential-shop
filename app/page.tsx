@@ -151,6 +151,124 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <section id="gallery" className="mx-auto max-w-7xl px-6 py-28">
+        <div className="mb-12 text-center">
+          <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#b08a5b]">
+            Gallery
+          </p>
+          <h2 className="text-4xl font-semibold md:text-5xl">
+            Handmade moments, captured beautifully.
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-[#6f625b]">
+            A luxury visual showcase of custom resin art, soy candles and unique gifts.
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-[3rem] border border-[#e4d2bd] bg-white/60 p-4 shadow-xl">
+          <div className="flex w-max animate-[slide_35s_linear_infinite] gap-5">
+            {[
+              "/images/gallery1.jpeg",
+              "/images/gallery2.jpeg",
+              "/images/gallery3.jpeg",
+              "/images/gallery4.jpeg",
+              "/images/gallery5.jpeg",
+              "/images/gallery6.jpeg",
+              "/images/gallery7.jpeg",
+              "/images/gallery8.jpeg",
+              "/images/gallery9.jpeg",
+              "/images/gallery10.jpeg",
+              "/images/gallery11.jpeg",
+              "/images/gallery12.jpeg",
+              "/images/gallery1.jpeg",
+              "/images/gallery2.jpeg",
+              "/images/gallery3.jpeg",
+              "/images/gallery4.jpeg",
+            ].map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Ressential gallery ${index + 1}`}
+                className="h-[420px] w-[330px] flex-none rounded-[2.5rem] object-cover shadow-md transition duration-500 hover:scale-105"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="contact"
+        className="mx-auto max-w-7xl px-6 py-24"
+>
+        <div className="grid gap-16 rounded-[3rem] bg-[#2b211d] p-10 text-white md:grid-cols-2 md:p-16">
+          <div>
+            <p className="mb-4 text-sm uppercase tracking-[0.35em] text-[#d7b98f]">
+              Custom Orders
+            </p>
+
+            <h2 className="text-4xl font-semibold leading-tight md:text-6xl">
+              Let’s create something unique together.
+            </h2>
+
+            <p className="mt-6 max-w-lg text-lg leading-8 text-[#f1e5d7]">
+              Send your idea, preferred colors, occasion and customization details.
+              We will contact you with a personalized proposal and estimated price.
+            </p>
+
+            <div className="mt-10 space-y-4 text-[#f1e5d7]">
+              <p>✓ Handmade luxury creations</p>
+              <p>✓ Personalized gifts & keepsakes</p>
+              <p>✓ Wedding & baptism creations</p>
+              <p>✓ Premium packaging available</p>
+            </div>
+          </div>
+
+          <form className="space-y-6 rounded-[2rem] bg-white p-8 text-[#2b211d] shadow-2xl">
+            <div>
+              <label className="mb-2 block text-sm font-semibold">
+                Full Name
+              </label>
+
+              <input
+                type="text"
+                placeholder="Enter your name"
+                className="w-full rounded-2xl border border-[#ddd] px-5 py-4 outline-none transition focus:border-[#b08a5b]"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold">
+                Email Address
+              </label>
+
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full rounded-2xl border border-[#ddd] px-5 py-4 outline-none transition focus:border-[#b08a5b]"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold">
+                Describe Your Idea
+              </label>
+
+              <textarea
+                rows={5}
+                placeholder="Describe your custom creation..."
+                className="w-full rounded-2xl border border-[#ddd] px-5 py-4 outline-none transition focus:border-[#b08a5b]"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full rounded-full bg-[#2b211d] px-8 py-4 text-sm font-semibold uppercase tracking-widest text-white transition hover:scale-[1.02]"
+            >
+              Send Request
+            </button>
+          </form>
+        </div>
+      </section>
     </main>
   );
 }
