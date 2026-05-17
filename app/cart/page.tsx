@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CartItem, getCart, removeFromCart } from "@/lib/cart";
+import CustomerNavbar from "@/components/CustomerMenu";
 
 export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -22,20 +23,7 @@ export default function CartPage() {
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
-      <nav className="border-b border-[#e7d8c6] bg-[#f8f3ed]/90">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="text-2xl font-semibold">
-            Ressential ✨
-          </a>
-
-          <a
-            href="/shop"
-            className="rounded-full bg-[#2b211d] px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white"
-          >
-            Continue Shopping
-          </a>
-        </div>
-      </nav>
+      <CustomerNavbar />
 
       <section className="mx-auto max-w-7xl px-6 py-20">
         <h1 className="text-5xl font-semibold md:text-7xl">Your Basket</h1>
@@ -67,6 +55,9 @@ export default function CartPage() {
                       <p className="mt-2 text-[#6f625b]">
                         Quantity: {item.quantity}
                       </p>
+                      {item.size && (
+                        <p className="text-[#6f625b]">Size: {item.size}</p>
+                      )}
                       {item.color && (
                         <p className="text-[#6f625b]">Color: {item.color}</p>
                       )}

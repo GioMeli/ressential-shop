@@ -2,6 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import CustomerNavbar from "@/components/CustomerMenu";
+
+type OrderItem = {
+  name: string;
+  quantity: number;
+  price: number;
+  size?: string;
+  color?: string;
+  templateDescription?: string;
+};
 
 type Order = {
   id: string;
@@ -9,11 +19,7 @@ type Order = {
   customer_email: string;
   total: number;
   status: string;
-  items: {
-    name: string;
-    quantity: number;
-    price: number;
-  }[];
+  items: OrderItem[];
   created_at: string;
 };
 
@@ -51,20 +57,7 @@ export default function AccountPage() {
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
-      <nav className="border-b border-[#e7d8c6] bg-[#f8f3ed]/90">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="text-2xl font-semibold">
-            Ressential ✨
-          </a>
-
-          <a
-            href="/shop"
-            className="rounded-full bg-[#2b211d] px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white"
-          >
-            Back to Shop
-          </a>
-        </div>
-      </nav>
+      <CustomerNavbar />
 
       <section className="mx-auto max-w-7xl px-6 py-20">
         <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#b08a5b]">
@@ -86,6 +79,7 @@ export default function AccountPage() {
         {!loading && orders.length === 0 && (
           <div className="mt-12 rounded-[2rem] bg-white p-10 text-center">
             <h2 className="text-3xl font-semibold">No orders yet</h2>
+
             <a href="/shop" className="mt-6 inline-block underline">
               Start shopping
             </a>
@@ -117,6 +111,8 @@ export default function AccountPage() {
                   className={`h-fit rounded-full px-5 py-3 text-xs font-semibold uppercase tracking-widest ${
                     order.status === "completed"
                       ? "bg-green-100 text-green-800"
+                      : order.status === "processing"
+                      ? "bg-blue-100 text-blue-800"
                       : "bg-yellow-100 text-yellow-800"
                   }`}
                 >
@@ -128,12 +124,37 @@ export default function AccountPage() {
                 {order.items.map((item, index) => (
                   <div
                     key={`${item.name}-${index}`}
-                    className="flex justify-between py-2 text-[#6f625b]"
+                    className="rounded-2xl bg-[#faf6f1] p-5"
                   >
-                    <span>
-                      {item.name} × {item.quantity}
-                    </span>
-                    <span>€{item.price * item.quantity}</span>
+                    <div className="flex justify-between gap-4">
+                      <div>
+                        <p className="font-semibold">
+                          {item.name} × {item.quantity}
+                        </p>
+
+                        {item.size && (
+                          <p className="mt-1 text-sm text-[#6f625b]">
+                            Size: {item.size}
+                          </p>
+                        )}
+
+                        {item.color && (
+                          <p className="mt-1 text-sm text-[#6f625b]">
+                            Color: {item.color}
+                          </p>
+                        )}
+
+                        {item.templateDescription && (
+                          <p className="mt-2 text-sm text-[#6f625b]">
+                            Details: {item.templateDescription}
+                          </p>
+                        )}
+                      </div>
+
+                      <span className="font-semibold">
+                        €{item.price * item.quantity}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>

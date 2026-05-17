@@ -3,6 +3,15 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
+type OrderItem = {
+  name: string;
+  quantity: number;
+  price: number;
+  size?: string;
+  color?: string;
+  templateDescription?: string;
+};
+
 type Order = {
   id: string;
   customer_name: string;
@@ -15,11 +24,7 @@ type Order = {
   status: string;
   total: number;
   created_at: string;
-  items: {
-    name: string;
-    quantity: number;
-    price: number;
-  }[];
+  items: OrderItem[];
 };
 
 export default function AdminOrdersPage() {
@@ -92,10 +97,10 @@ export default function AdminOrdersPage() {
           </a>
 
           <a
-            href="/shop"
+            href="/admin/products"
             className="rounded-full bg-[#2b211d] px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white"
           >
-            Back to Shop
+            Products
           </a>
         </div>
       </nav>
@@ -153,11 +158,21 @@ export default function AdminOrdersPage() {
                     Ordered Products
                   </p>
 
-                  <div className="mt-2 space-y-1 text-[#6f625b]">
+                  <div className="mt-2 space-y-2 text-[#6f625b]">
                     {order.items.map((item, index) => (
-                      <p key={`${item.name}-${index}`}>
-                        {item.name} × {item.quantity}
-                      </p>
+                      <div key={`${item.name}-${index}`}>
+                        <p>
+                          {item.name} × {item.quantity}
+                        </p>
+
+                        {item.size && (
+                          <p className="text-sm">Size: {item.size}</p>
+                        )}
+
+                        {item.color && (
+                          <p className="text-sm">Color: {item.color}</p>
+                        )}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -204,31 +219,40 @@ export default function AdminOrdersPage() {
                     <p>
                       <strong>Order ID:</strong> {order.id}
                     </p>
+
                     <p>
                       <strong>Total:</strong> €{Number(order.total)}
                     </p>
+
                     <p>
                       <strong>Name:</strong> {order.customer_name}
                     </p>
+
                     <p>
                       <strong>Email:</strong> {order.customer_email}
                     </p>
+
                     <p>
                       <strong>Phone:</strong> {order.customer_phone || "-"}
                     </p>
+
                     <p>
                       <strong>Country:</strong> {order.country}
                     </p>
+
                     <p>
                       <strong>City:</strong> {order.city || "-"}
                     </p>
+
                     <p>
                       <strong>Address:</strong> {order.address || "-"}
                     </p>
+
                     <p>
                       <strong>Date:</strong>{" "}
                       {new Date(order.created_at).toLocaleString()}
                     </p>
+
                     <p>
                       <strong>Status:</strong> {order.status}
                     </p>
@@ -236,7 +260,8 @@ export default function AdminOrdersPage() {
 
                   {order.notes && (
                     <div className="mt-6 rounded-2xl bg-white p-5">
-                      <strong>Customer Notes / Customization:</strong>
+                      <strong>Customer Notes / General Request:</strong>
+
                       <p className="mt-2 text-[#6f625b]">{order.notes}</p>
                     </div>
                   )}
@@ -244,16 +269,42 @@ export default function AdminOrdersPage() {
                   <div className="mt-6 rounded-2xl bg-white p-5">
                     <strong>Products:</strong>
 
-                    <div className="mt-4 space-y-3">
+                    <div className="mt-4 space-y-4">
                       {order.items.map((item, index) => (
                         <div
                           key={`${item.name}-${index}`}
-                          className="flex justify-between border-b border-[#eee] pb-3"
+                          className="rounded-2xl border border-[#eee] p-4"
                         >
-                          <span>
-                            {item.name} × {item.quantity}
-                          </span>
-                          <span>€{item.price * item.quantity}</span>
+                          <div className="flex justify-between gap-4">
+                            <div>
+                              <p className="font-semibold">
+                                {item.name} × {item.quantity}
+                              </p>
+
+                              {item.size && (
+                                <p className="mt-1 text-sm text-[#6f625b]">
+                                  Size: {item.size}
+                                </p>
+                              )}
+
+                              {item.color && (
+                                <p className="mt-1 text-sm text-[#6f625b]">
+                                  Color: {item.color}
+                                </p>
+                              )}
+
+                              {item.templateDescription && (
+                                <p className="mt-2 text-sm text-[#6f625b]">
+                                  Template / Custom Details:{" "}
+                                  {item.templateDescription}
+                                </p>
+                              )}
+                            </div>
+
+                            <span className="font-semibold">
+                              €{item.price * item.quantity}
+                            </span>
+                          </div>
                         </div>
                       ))}
                     </div>

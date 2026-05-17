@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import CustomerNavbar from "@/components/CustomerMenu";
 
 type ProductPageProps = {
   params: Promise<{
@@ -13,6 +14,7 @@ type Product = {
   category: string;
   category_id: string;
   price: number;
+  size: string | null;
   image: string;
   images: string[] | null;
   description: string | null;
@@ -35,7 +37,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <main className="min-h-screen bg-[#f8f3ed] px-6 py-24 text-[#2b211d]">
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="text-5xl font-semibold">Product not found</h1>
-
           <a href="/shop" className="mt-8 inline-block underline">
             Back to shop
           </a>
@@ -51,20 +52,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
-      <nav className="border-b border-[#e7d8c6] bg-[#f8f3ed]/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="text-2xl font-semibold tracking-wide">
-            Ressential ✨
-          </a>
-
-          <a
-            href="/shop"
-            className="rounded-full bg-[#2b211d] px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white"
-          >
-            Back to Shop
-          </a>
-        </div>
-      </nav>
+      <CustomerNavbar />
 
       <section className="mx-auto grid max-w-7xl gap-14 px-6 py-20 md:grid-cols-2 md:items-start">
         <div>
@@ -101,14 +89,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <p className="mt-6 text-3xl font-bold">€{Number(product.price)}</p>
 
+          {product.size && (
+            <p className="mt-4 text-lg text-[#6f625b]">
+              Size: <strong>{product.size}</strong>
+            </p>
+          )}
+
           <p className="mt-8 max-w-xl text-lg leading-8 text-[#6f625b]">
             {product.description}
           </p>
 
           <div className="mt-10 rounded-[2rem] border border-[#e4d2bd] bg-white p-7">
-            <h2 className="text-2xl font-semibold">
-              Customization options
-            </h2>
+            <h2 className="text-2xl font-semibold">Customization options</h2>
 
             <div className="mt-6 grid gap-4">
               <div className="rounded-2xl bg-[#f8f3ed] p-5">

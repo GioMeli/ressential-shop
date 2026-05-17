@@ -3,9 +3,11 @@ export type CartItem = {
   slug: string;
   name: string;
   price: number;
+  size?: string;
   image: string;
   quantity: number;
   color?: string;
+  templateDescription?: string;
 };
 
 const CART_KEY = "ressential_cart";
@@ -27,7 +29,8 @@ export function addToCart(item: CartItem) {
   const existingItem = cart.find(
     (cartItem) =>
       cartItem.id === item.id &&
-      cartItem.color === item.color
+      cartItem.color === item.color &&
+      cartItem.templateDescription === item.templateDescription
   );
 
   if (existingItem) {

@@ -17,6 +17,7 @@ type Product = {
   badge: string | null;
   is_best_seller: boolean;
   is_active: boolean;
+  size: string | null;
 };
 
 export default function AdminProductsPage() {
@@ -32,6 +33,7 @@ export default function AdminProductsPage() {
     badge: "",
     is_best_seller: false,
     is_active: true,
+    size: "",
   });
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -145,6 +147,7 @@ export default function AdminProductsPage() {
       category_id: form.category_id,
       category: categoryTitle,
       price: Number(form.price),
+      size: form.size,
       image: uploadedImages[0],
       images: uploadedImages,
       description: form.description,
@@ -164,6 +167,7 @@ export default function AdminProductsPage() {
       name: "",
       category_id: "soy-candles",
       price: "",
+      size: "",
       description: "",
       badge: "",
       is_best_seller: false,
@@ -270,6 +274,25 @@ export default function AdminProductsPage() {
                   }
                   className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
                 />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium">
+                    Size / Product Details
+                </label>
+
+                <input
+                    placeholder="Example: 10cm x 15cm, 250ml candle, A5 diary"
+                    value={form.size}
+                    onChange={(e) =>
+                        setForm({ ...form, size: e.target.value })
+                    }
+                    className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+                />
+
+                <p className="mt-2 text-xs text-[#7a6d65]">
+                    Write the product size, capacity, dimensions or format.
+                </p>
               </div>
 
               <div>

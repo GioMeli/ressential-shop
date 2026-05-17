@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { categories } from "@/data/categories";
 import { supabase } from "@/lib/supabase";
 import { addToCart } from "@/lib/cart";
-import AuthButtons from "@/components/AuthButtons";
+import CustomerNavbar from "@/components/CustomerMenu";
 
 type Product = {
   id: string;
@@ -162,24 +162,7 @@ export default function ShopPage() {
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
-      <nav className="sticky top-0 z-50 border-b border-[#e7d8c6] bg-[#f8f3ed]/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-          <a href="/" className="text-2xl font-semibold tracking-wide">
-            Ressential ✨
-          </a>
-
-          <div className="flex items-center gap-3">
-            <a
-              href="/cart"
-              className="rounded-full border border-[#2b211d] px-5 py-3 text-xs font-semibold uppercase tracking-widest text-[#2b211d]"
-            >
-              Basket
-            </a>
-
-            <AuthButtons />
-          </div>
-        </div>
-      </nav>
+      <CustomerNavbar />
 
       <section className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-16">
         <div className="text-center">

@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { CartItem, clearCart, getCart } from "@/lib/cart";
 import { supabase } from "@/lib/supabase";
+import CustomerNavbar from "@/components/CustomerMenu";
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -62,20 +63,7 @@ export default function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
-      <nav className="border-b border-[#e7d8c6] bg-[#f8f3ed]/90">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="text-2xl font-semibold">
-            Ressential ✨
-          </a>
-
-          <a
-            href="/cart"
-            className="rounded-full bg-[#2b211d] px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white"
-          >
-            Back to Basket
-          </a>
-        </div>
-      </nav>
+      <CustomerNavbar />
 
       <section className="mx-auto max-w-7xl px-6 py-20">
         <h1 className="text-5xl font-semibold md:text-7xl">Checkout</h1>
