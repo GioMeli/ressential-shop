@@ -1,230 +1,219 @@
-import CustomerNavbar from "@/components/CustomerMenu";
+import CustomerMenu from "@/components/CustomerMenu";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
-      <CustomerNavbar />
+    <main className="min-h-screen bg-[#fbf7f1] text-[#2b211d]">
+      <CustomerMenu />
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-10 md:grid-cols-2 md:items-center md:px-6 md:py-20">
-        <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b] md:text-sm">
-            Handmade Resin Art & Soy Candles
-          </p>
+      <section className="mx-auto max-w-7xl px-4 py-4 md:px-6 md:py-6">
+        <div className="rounded-[1.5rem] border border-[#eadccc] bg-white px-6 py-7 shadow-sm md:px-10 md:py-8">
+          <div className="grid gap-6 md:grid-cols-[1fr_auto_280px] md:items-center">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.35em] text-[#b08a5b] md:text-xs">
+                Handmade Resin Art & Soy Candles
+              </p>
 
-          <h1 className="mt-5 text-4xl font-semibold leading-tight md:text-7xl">
-            Luxury handmade creations with emotion and elegance.
-          </h1>
+              <h1 className="mt-3 max-w-4xl text-3xl font-semibold leading-tight md:text-5xl">
+                Elegant handmade gifts made for meaningful moments.
+              </h1>
 
-          <p className="mt-6 max-w-xl text-base leading-8 text-[#6f625b] md:text-lg">
-            Discover premium handmade gifts, soy candles, resin art and custom
-            creations designed for weddings, baptisms and meaningful moments.
-          </p>
+              <p className="mt-4 max-w-3xl text-sm leading-6 text-[#6f625b] md:text-base">
+                Premium resin art, soy candles and personalized creations for gifts,
+                weddings, baptisms and custom memories.
+              </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="/shop"
-              className="rounded-full bg-[#2b211d] px-8 py-4 text-center text-xs font-semibold uppercase tracking-widest text-white"
-            >
-              Shop Collection
-            </a>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="/shop"
+                  className="rounded-full bg-[#2b211d] px-7 py-3 text-center text-xs font-semibold uppercase tracking-widest text-white"
+                >
+                  Shop Collection
+                </a>
 
-            <a
-              href="#custom"
-              className="rounded-full border border-[#b08a5b] px-8 py-4 text-center text-xs font-semibold uppercase tracking-widest text-[#2b211d]"
-            >
-              Create Your Own
-            </a>
-          </div>
-        </div>
+                <a
+                  href="/custom"
+                  className="rounded-full border border-[#b08a5b] px-7 py-3 text-center text-xs font-semibold uppercase tracking-widest text-[#2b211d]"
+                >
+                  Create Your Own
+                </a>
+              </div>
+            </div>
 
-        <div className="relative">
-          <div className="rounded-[2.5rem] bg-[#dcc5ad] p-3 shadow-2xl md:rounded-[4rem]">
             <img
-              src="/images/hero.jpeg"
-              alt="Ressential handmade resin creation"
-              className="h-[420px] w-full rounded-[2rem] object-cover md:h-[620px] md:rounded-[3.5rem]"
+              src="/images/logo.jpeg"
+              alt="Ressential logo"
+              className="mx-auto h-24 w-24 rounded-full border border-[#eadccc] object-cover shadow-md md:h-28 md:w-28"
             />
-          </div>
 
-          <div className="absolute bottom-6 left-6 rounded-[1.5rem] bg-white/90 p-5 shadow-xl backdrop-blur-md">
-            <p className="text-xs uppercase tracking-[0.25em] text-[#b08a5b]">
-              Custom Made
-            </p>
-            <h3 className="mt-2 text-xl font-semibold">
-              Your idea, handcrafted.
-            </h3>
-            <p className="mt-1 text-sm text-[#6f625b]">
-              Colors, names, flowers and premium details.
-            </p>
+            <div className="rounded-2xl bg-[#fbf7f1] px-6 py-5 text-sm text-[#6f625b]">
+              <p className="font-semibold text-[#2b211d]">Premium handmade</p>
+              <p className="mt-1">Custom orders in Greece & Cyprus</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="shop" className="mx-auto max-w-7xl px-5 py-14 md:px-6">
-        <div className="text-center">
-          <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-            Curated Collection
-          </p>
+      <section className="mx-auto max-w-7xl px-4 py-10 md:px-6">
+        <div className="mb-7 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
+              Shop by category
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold md:text-4xl">
+              Explore Ressential
+            </h2>
+          </div>
 
-          <h2 className="mt-4 text-3xl font-semibold md:text-5xl">
-            Explore our handmade categories
-          </h2>
+          <a href="/shop" className="hidden text-sm font-semibold underline md:block">
+            View all products
+          </a>
         </div>
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {[
-            {
-              title: "Soy Candles",
-              text: "Luxury handmade soy candles with elegant scents and premium details.",
-              image: "/images/candle1.jpeg",
-            },
-            {
-              title: "Resin Art",
-              text: "Unique resin art pieces crafted with flowers, glitter and gold details.",
-              image: "/images/resin1.jpeg",
-            },
-            {
-              title: "Wedding & Baptism",
-              text: "Personalized keepsakes for weddings, baptisms and special occasions.",
-              image: "/images/gift1.jpeg",
-            },
-          ].map((item) => (
+            ["Soy Candles", "/images/candle1.jpeg"],
+            ["Resin Art", "/images/resin1.jpeg"],
+            ["Personalized Gifts", "/images/gift1.jpeg"],
+            ["Custom Creations", "/images/gallery7.jpeg"],
+          ].map(([title, image]) => (
             <a
-              key={item.title}
+              key={title}
               href="/shop"
-              className="overflow-hidden rounded-[2rem] border border-[#e4d2bd] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              className="group overflow-hidden rounded-[1.5rem] bg-white shadow-sm"
             >
               <img
-                src={item.image}
-                alt={item.title}
-                className="h-60 w-full object-cover"
+                src={image}
+                alt={title}
+                className="h-40 w-full object-cover transition group-hover:scale-105 md:h-56"
               />
 
-              <div className="p-6">
-                <h3 className="text-2xl font-semibold">{item.title}</h3>
-                <p className="mt-3 leading-7 text-[#6f625b]">{item.text}</p>
-
-                <span className="mt-6 inline-block rounded-full bg-[#2b211d] px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white">
-                  Explore Collection
-                </span>
+              <div className="p-4 text-center">
+                <h3 className="text-sm font-semibold md:text-base">{title}</h3>
               </div>
             </a>
           ))}
         </div>
       </section>
 
-      <section
-        id="custom"
-        className="mx-auto max-w-7xl px-5 py-14 md:px-6"
-      >
-        <div className="grid overflow-hidden rounded-[2.5rem] bg-[#2b211d] text-white md:grid-cols-2">
-          <div className="p-8 md:p-14">
-            <p className="text-xs uppercase tracking-[0.35em] text-[#d6b488]">
-              Custom Orders
-            </p>
-
-            <h2 className="mt-5 text-3xl font-semibold md:text-5xl">
-              Design a piece that exists only for you.
-            </h2>
-
-            <p className="mt-6 leading-8 text-white/80">
-              Send your idea, preferred colors, names, occasion and details.
-              Ressential will prepare a personalized proposal for your creation.
-            </p>
-
-            <div className="mt-8 space-y-4 text-white/90">
-              <p>✓ Choose product type, size and shape</p>
-              <p>✓ Select colors, glitter, flowers and gold flakes</p>
-              <p>✓ Add names, dates, quotes or symbols</p>
-              <p>✓ Receive estimated price and production time</p>
-            </div>
-
-            <a
-              href="#contact"
-              className="mt-10 inline-block rounded-full bg-white px-8 py-4 text-xs font-semibold uppercase tracking-widest text-[#2b211d]"
-            >
-              Request Custom Order
-            </a>
-          </div>
-
+      <section className="mx-auto max-w-7xl px-4 py-10 md:px-6">
+        <div className="rounded-[2rem] bg-[#ead8cf] p-6 text-center md:p-10">
           <img
-            src="/images/gallery7.jpeg"
-            alt="Custom Ressential handmade creation"
-            className="h-full min-h-[420px] w-full object-cover"
+            src="/images/logo.jpeg"
+            alt="Ressential logo"
+            className="mx-auto h-24 w-24 rounded-full object-cover"
           />
+
+          <h2 className="mt-5 text-3xl font-semibold md:text-4xl">
+            Design something personal
+          </h2>
+
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#5b4a42] md:text-base">
+            Choose a custom handmade creation, describe your idea, preferred
+            colors, names, dates and details, and Ressential will prepare a
+            unique piece for you.
+          </p>
+
+          <a
+            href="/custom"
+            className="mt-7 inline-block rounded-full bg-[#2b211d] px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white"
+          >
+            Start Custom Design
+          </a>
         </div>
       </section>
 
-      <section id="gallery" className="mx-auto max-w-7xl px-5 py-14 md:px-6">
-        <div className="text-center">
+      <section className="mx-auto max-w-7xl px-4 py-10 md:px-6">
+        <div className="mb-7 text-center">
           <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-            Gallery
+            Featured pieces
           </p>
-
-          <h2 className="mt-4 text-3xl font-semibold md:text-5xl">
-            Handmade moments, captured beautifully.
+          <h2 className="mt-3 text-3xl font-semibold md:text-4xl">
+            Handmade inspiration
           </h2>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
           {[
-            "/images/gallery1.jpeg",
-            "/images/gallery2.jpeg",
+            "/images/gallery3.jpeg",
             "/images/gallery4.jpeg",
-            "/images/gallery6.jpeg",
-            "/images/gallery7.jpeg",
+            "/images/gallery5.jpeg",
             "/images/gallery8.jpeg",
-            "/images/gallery10.jpeg",
             "/images/gallery11.jpeg",
           ].map((image) => (
             <img
               key={image}
               src={image}
-              alt="Ressential gallery"
-              className="h-48 w-full rounded-[1.5rem] object-cover md:h-72"
+              alt="Ressential handmade product"
+              className="h-44 w-full rounded-[1.4rem] object-cover md:h-64"
             />
           ))}
         </div>
       </section>
 
-      <section id="contact" className="mx-auto max-w-7xl px-5 py-14 md:px-6">
-        <div className="rounded-[2.5rem] border border-[#e4d2bd] bg-white p-8 text-center shadow-sm md:p-14">
-          <img
-            src="/images/logo.jpeg"
-            alt="Ressential logo"
-            className="mx-auto h-28 w-28 rounded-full object-cover"
-          />
-
-          <h2 className="mt-6 text-3xl font-semibold md:text-5xl">
-            Start your handmade order
-          </h2>
-
-          <p className="mx-auto mt-4 max-w-2xl leading-8 text-[#6f625b]">
-            For custom creations, gifts, weddings, baptisms and premium handmade
-            pieces, contact Ressential directly.
-          </p>
-
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <a
-              href="https://www.instagram.com/ressential_experience/"
-              target="_blank"
-              className="rounded-full bg-[#2b211d] px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white"
-            >
-              Instagram
-            </a>
-
-            <a
-              href="/shop"
-              className="rounded-full border border-[#b08a5b] px-8 py-4 text-xs font-semibold uppercase tracking-widest text-[#2b211d]"
-            >
-              Visit Shop
-            </a>
-          </div>
+      <section className="mx-auto max-w-7xl px-4 py-10 md:px-6">
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            ["Custom Orders", "Personalized creations for gifts, weddings and baptisms."],
+            ["Greece & Cyprus", "Focused delivery and service for Greece and Cyprus customers."],
+            ["Handmade Quality", "Each piece is crafted with care, detail and premium finishing."],
+          ].map(([title, text]) => (
+            <div key={title} className="rounded-[1.5rem] bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-semibold">{title}</h3>
+              <p className="mt-3 text-sm leading-7 text-[#6f625b]">{text}</p>
+            </div>
+          ))}
         </div>
       </section>
 
-      <footer className="border-t border-[#e4d2bd] px-5 py-10 text-center text-sm text-[#6f625b]">
-        © 2026 Ressential. All rights reserved.
+      <footer className="mt-10 border-t border-[#eadccc] bg-white px-4 py-10">
+        <div className="mx-auto grid max-w-7xl gap-8 text-sm text-[#6f625b] md:grid-cols-4">
+          <div>
+            <img
+              src="/images/logo.jpeg"
+              alt="Ressential logo"
+              className="h-16 w-16 rounded-full object-cover"
+            />
+            <p className="mt-4 leading-7">
+              Handmade resin art and soy candle creations with luxury detail.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-[#2b211d]">Shop</h4>
+            <div className="mt-4 space-y-2">
+              <p><a href="/shop">All Products</a></p>
+              <p><a href="/custom">Custom Design</a></p>
+              <p><a href="/favorites">Favorites</a></p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-[#2b211d]">Support</h4>
+            <div className="mt-4 space-y-2">
+              <p><a href="/contact">Contact</a></p>
+              <p><a href="/messages">Messages</a></p>
+              <p><a href="/account">My Account</a></p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-[#2b211d]">Social</h4>
+            <div className="mt-4 space-y-2">
+              <p>
+                <a
+                  href="https://www.instagram.com/ressential_experience/"
+                  target="_blank"
+                >
+                  Instagram
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <p className="mt-10 text-center text-xs text-[#8a7b72]">
+          © 2026 Ressential. All rights reserved.
+        </p>
       </footer>
     </main>
   );
