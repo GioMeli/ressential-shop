@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { categories } from "@/data/categories";
 import { supabase } from "@/lib/supabase";
 import { addToCart } from "@/lib/cart";
+import AuthButtons from "@/components/AuthButtons";
 
 type Product = {
   id: string;
@@ -13,10 +14,101 @@ type Product = {
   category_id: string;
   price: number;
   image: string;
+  images: string[] | null;
   description: string | null;
   badge: string | null;
   is_best_seller: boolean;
+  is_active: boolean;
 };
+
+function ProductCard({ product }: { product: Product }) {
+  const productImages =
+    product.images && product.images.length > 0
+      ? product.images
+      : [product.image];
+
+  const [imageIndex, setImageIndex] = useState(0);
+
+  function nextImage() {
+    setImageIndex((prev) => (prev + 1) % productImages.length);
+  }
+
+  function previousImage() {
+    setImageIndex((prev) =>
+      prev === 0 ? productImages.length - 1 : prev - 1
+    );
+  }
+
+  return (
+    <div className="group bg-white">
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#f3eee8]">
+        <a href={`/products/${product.slug}`}>
+          <img
+            src={productImages[imageIndex]}
+            alt={product.name}
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          />
+        </a>
+
+        {product.badge && (
+          <span className="absolute left-3 top-3 bg-[#f3bfd2] px-3 py-1 text-xs font-medium">
+            {product.badge}
+          </span>
+        )}
+
+        {productImages.length > 1 && (
+          <>
+            <button
+              onClick={previousImage}
+              className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-lg shadow"
+            >
+              ‹
+            </button>
+
+            <button
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-lg shadow"
+            >
+              ›
+            </button>
+          </>
+        )}
+      </div>
+
+      <div className="px-2 py-4 text-center">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-[#b08a5b]">
+          {product.category}
+        </p>
+
+        <a href={`/products/${product.slug}`}>
+          <h3 className="mt-2 min-h-[48px] text-sm font-semibold leading-6 text-[#2b211d] md:text-base">
+            {product.name}
+          </h3>
+        </a>
+
+        <p className="mt-2 text-sm font-semibold">€{Number(product.price)}</p>
+
+        <button
+          onClick={() => {
+            addToCart({
+              id: product.id,
+              slug: product.slug,
+              name: product.name,
+              price: Number(product.price),
+              image: productImages[0],
+              quantity: 1,
+            });
+
+            alert(`${product.name} added to basket`);
+          }}
+          className="mt-3 w-full rounded-full bg-[#2b211d] px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-white"
+        >
+          Add to Basket
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -31,12 +123,11 @@ export default function ShopPage() {
       const { data, error } = await supabase
         .from("products")
         .select("*")
+        .eq("is_active", true)
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error loading products:", error);
-      } else {
-        setProducts(data || []);
+      if (!error && data) {
+        setProducts(data);
       }
 
       setLoading(false);
@@ -71,170 +162,95 @@ export default function ShopPage() {
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
-      <nav className="border-b border-[#e7d8c6] bg-[#f8f3ed]/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+      <nav className="sticky top-0 z-50 border-b border-[#e7d8c6] bg-[#f8f3ed]/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
           <a href="/" className="text-2xl font-semibold tracking-wide">
             Ressential ✨
           </a>
 
-          <a
-            href="/"
-            className="rounded-full bg-[#2b211d] px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white"
-          >
-            Back Home
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="/cart"
+              className="rounded-full border border-[#2b211d] px-5 py-3 text-xs font-semibold uppercase tracking-widest text-[#2b211d]"
+            >
+              Basket
+            </a>
+
+            <AuthButtons />
+          </div>
         </div>
       </nav>
 
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#b08a5b]">
-          Ressential Shop
-        </p>
+      <section className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-16">
+        <div className="text-center">
+          <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#b08a5b]">
+            Ressential Shop
+          </p>
 
-        <h1 className="text-5xl font-semibold md:text-7xl">
-          All handmade products
-        </h1>
+          <h1 className="text-4xl font-semibold md:text-7xl">
+            All handmade products
+          </h1>
 
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-[#6f625b]">
-          Browse all available creations and filter by category, price and best
-          sellers.
-        </p>
+          <p className="mx-auto mt-5 max-w-2xl text-[#6f625b]">
+            Browse handmade resin art, soy candles, gifts and custom creations.
+          </p>
+        </div>
 
-        <div className="mt-12 rounded-[2rem] border border-[#e7d8c6] bg-white p-6 shadow-sm">
-          <div className="grid gap-5 md:grid-cols-3">
-            <div>
-              <label className="mb-2 block text-sm font-semibold uppercase tracking-widest text-[#6f625b]">
-                Category
-              </label>
+        <div className="sticky top-[72px] z-40 mt-8 border-y border-[#eadccc] bg-[#f8f3ed]/95 py-4 backdrop-blur-md">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="rounded-none border border-[#ddd0c0] bg-white px-4 py-3 text-sm outline-none"
+            >
+              <option value="all">All Categories</option>
 
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full rounded-2xl border border-[#ddd0c0] bg-[#fdfaf7] px-5 py-4 outline-none transition focus:border-[#2b211d]"
-              >
-                <option value="all">All Categories</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.title}
+                </option>
+              ))}
+            </select>
 
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.title}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="rounded-none border border-[#ddd0c0] bg-white px-4 py-3 text-sm outline-none"
+            >
+              <option value="default">Sort by</option>
+              <option value="low-high">Price: Low to High</option>
+              <option value="high-low">Price: High to Low</option>
+            </select>
 
-            <div>
-              <label className="mb-2 block text-sm font-semibold uppercase tracking-widest text-[#6f625b]">
-                Sort By
-              </label>
-
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
-                className="w-full rounded-2xl border border-[#ddd0c0] bg-[#fdfaf7] px-5 py-4 outline-none transition focus:border-[#2b211d]"
-              >
-                <option value="default">Featured</option>
-                <option value="low-high">Price: Low to High</option>
-                <option value="high-low">Price: High to Low</option>
-              </select>
-            </div>
-
-            <div className="flex items-end">
-              <button
-                onClick={() => setBestSellerOnly(!bestSellerOnly)}
-                className={`w-full rounded-2xl px-5 py-4 text-sm font-semibold uppercase tracking-widest transition ${
-                  bestSellerOnly
-                    ? "bg-[#2b211d] text-white"
-                    : "border border-[#ddd0c0] bg-[#fdfaf7] text-[#2b211d]"
-                }`}
-              >
-                {bestSellerOnly
-                  ? "Showing Best Sellers"
-                  : "Best Sellers Only"}
-              </button>
-            </div>
+            <button
+              onClick={() => setBestSellerOnly(!bestSellerOnly)}
+              className={`col-span-2 border px-4 py-3 text-sm font-semibold uppercase tracking-widest md:col-span-1 ${
+                bestSellerOnly
+                  ? "border-[#2b211d] bg-[#2b211d] text-white"
+                  : "border-[#ddd0c0] bg-white text-[#2b211d]"
+              }`}
+            >
+              Best Sellers
+            </button>
           </div>
         </div>
 
         {loading && (
-          <div className="mt-16 rounded-[2rem] border border-[#e4d2bd] bg-white p-10 text-center">
-            <h2 className="text-3xl font-semibold">Loading products...</h2>
+          <div className="mt-12 rounded-[2rem] bg-white p-10 text-center">
+            Loading products...
           </div>
         )}
 
         {!loading && (
-          <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
             {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="group overflow-hidden rounded-[2.5rem] border border-[#e4d2bd] bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
-              >
-                <div className="relative overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-[320px] w-full object-cover transition duration-700 group-hover:scale-110"
-                  />
-
-                  {product.badge && (
-                    <div className="absolute left-4 top-4 rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-[#2b211d] shadow">
-                      {product.badge}
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-7">
-                  <p className="mb-2 text-sm uppercase tracking-[0.25em] text-[#b08a5b]">
-                    {product.category}
-                  </p>
-
-                  <h3 className="text-3xl font-semibold text-[#2b211d]">
-                    {product.name}
-                  </h3>
-
-                  <p className="mt-4 leading-7 text-[#6f625b]">
-                    {product.description}
-                  </p>
-
-                    <div className="mt-8 flex flex-col gap-3">
-                        <div className="flex items-center justify-between">
-                            <span className="text-2xl font-bold text-[#2b211d]">
-                                €{Number(product.price)}
-                            </span>
-
-                            <a
-                                href={`/products/${product.slug}`}
-                                className="rounded-full border border-[#2b211d] px-5 py-3 text-sm font-semibold uppercase tracking-widest text-[#2b211d] transition hover:bg-[#2b211d] hover:text-white"
-                            >
-                                View Product
-                            </a>
-                        </div>
-
-                        <button
-                            onClick={() => {
-                                addToCart({
-                                    id: product.id,
-                                    slug: product.slug,
-                                    name: product.name,
-                                    price: Number(product.price),
-                                    image: product.image,
-                                    quantity: 1,
-                                });
-
-                                alert(`${product.name} added to basket`);
-                            }}
-                            className="w-full rounded-full bg-[#2b211d] px-6 py-4 text-sm font-semibold uppercase tracking-widest text-white transition hover:scale-[1.02]"
-                        >
-                            Add to Basket
-                        </button>
-                    </div>
-                </div>
-              </div>
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}
 
         {!loading && filteredProducts.length === 0 && (
-          <div className="mt-16 rounded-[2rem] border border-[#e4d2bd] bg-white p-10 text-center">
+          <div className="mt-12 rounded-[2rem] bg-white p-10 text-center">
             <h2 className="text-3xl font-semibold">No products found</h2>
             <p className="mt-3 text-[#6f625b]">
               Try another category or filter.

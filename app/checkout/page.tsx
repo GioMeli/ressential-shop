@@ -37,11 +37,14 @@ export default function CheckoutPage() {
 
     setLoading(true);
 
+    const { data: userData } = await supabase.auth.getUser();
+
     const { error } = await supabase.from("orders").insert({
-      ...form,
-      items: cart,
-      total,
-      status: "pending",
+        ...form,
+        user_id: userData.user?.id ?? null,
+        items: cart,
+        total,
+        status: "pending",
     });
 
     setLoading(false);
