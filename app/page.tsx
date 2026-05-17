@@ -1,4 +1,5 @@
 import CustomerMenu from "@/components/CustomerMenu";
+import FeaturedProductsSlider from "@/components/FeaturedProductsSlider";
 
 export default function HomePage() {
   return (
@@ -52,6 +53,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <FeaturedProductsSlider />
 
       <section className="mx-auto max-w-7xl px-4 py-10 md:px-6">
         <div className="mb-7 flex items-end justify-between gap-4">

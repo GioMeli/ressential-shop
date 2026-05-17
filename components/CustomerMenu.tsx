@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { getCart } from "@/lib/cart";
+import { getFavorites } from "@/lib/favorites";
 
 export default function CustomerMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
   const [cartCount, setCartCount] = useState(0);
+  const [favoritesCount, setFavoritesCount] = useState(0);
 
   useEffect(() => {
     async function loadUser() {
@@ -18,6 +20,14 @@ export default function CustomerMenu() {
     loadUser();
     setCartCount(getCart().reduce((sum, item) => sum + item.quantity, 0));
 
+    setFavoritesCount(getFavorites().length);
+
+    function updateFavoritesCount() {
+      setFavoritesCount(getFavorites().length);
+    }
+
+    window.addEventListener("favorites-updated", updateFavoritesCount);
+
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setEmail(session?.user?.email ?? null);
@@ -26,6 +36,7 @@ export default function CustomerMenu() {
 
     return () => {
       listener.subscription.unsubscribe();
+      window.removeEventListener("favorites-updated", updateFavoritesCount);
     };
   }, []);
 
@@ -73,8 +84,13 @@ export default function CustomerMenu() {
             </div>
 
             <div className="hidden items-center gap-6 text-3xl md:flex">
-              <a href="/favorites" title="Favorites" className="leading-none">
+              <a href="/favorites" title="Favorites" className="relative leading-none">
                 ♡
+                {favoritesCount > 0 && (
+                  <span className="absolute -right-3 -top-2 rounded-full bg-[#d56c8c] px-2 py-0.5 text-xs font-semibold text-white">
+                    {favoritesCount}
+                  </span>
+                )}
               </a>
 
               <a href="/cart" title="Basket" className="relative leading-none">
@@ -210,7 +226,7 @@ export default function CustomerMenu() {
             <nav className="mt-8 flex flex-col gap-5 text-lg">
               <a href="/shop">Shop</a>
               <a href="/custom">Create Your Own</a>
-              <a href="/favorites">♡ Favorites</a>
+              <a href="/favorites">♡ Favorites ({favoritesCount})</a>
               <a href="/cart">🛍 Basket ({cartCount})</a>
               <a href={email ? "/account" : "/login"}>
                 👤 {email ? "My Account" : "Login / Register"}
