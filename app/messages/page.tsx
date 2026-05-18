@@ -39,6 +39,13 @@ export default function MessagesPage() {
       return;
     }
 
+    await supabase
+      .from("messages")
+      .update({ is_read: true })
+      .eq("user_id", userData.user.id)
+      .eq("sender", "admin")
+      .eq("is_read", false);
+
     const { data: profile } = await supabase
       .from("profiles")
       .select("display_name")

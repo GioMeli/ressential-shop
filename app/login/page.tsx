@@ -33,7 +33,18 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/";
+      const { data: adminData } = await supabase
+        .from("admin_users")
+        .select("email")
+        .eq("email", email)
+        .single();
+
+      if (adminData) {
+        window.location.href = "/admin/orders";
+      } else {
+        window.location.href = "/";
+      }
+
       return;
     }
 
