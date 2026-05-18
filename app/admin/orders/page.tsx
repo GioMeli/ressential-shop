@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import AdminNavbar from "@/components/AdminNavbar";
 
 type OrderItem = {
   name: string;
@@ -90,20 +91,7 @@ export default function AdminOrdersPage() {
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
-      <nav className="border-b border-[#e7d8c6] bg-[#f8f3ed]/90">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="text-2xl font-semibold">
-            Ressential ✨
-          </a>
-
-          <a
-            href="/admin/products"
-            className="rounded-full bg-[#2b211d] px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white"
-          >
-            Products
-          </a>
-        </div>
-      </nav>
+     <AdminNavbar />
 
       <section className="mx-auto max-w-7xl px-6 py-20">
         <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#b08a5b]">

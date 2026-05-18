@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { categories } from "@/data/categories";
 import { supabase } from "@/lib/supabase";
+import AdminNavbar from "@/components/AdminNavbar";
 
 type Product = {
   id: string;
@@ -197,6 +198,7 @@ export default function AdminProductsPage() {
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
+      <AdminNavbar />
       <section className="mx-auto max-w-7xl px-6 py-16">
         <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#b08a5b]">
           Admin Dashboard
