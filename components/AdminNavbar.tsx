@@ -10,6 +10,25 @@ export default function AdminNavbar() {
 
   useEffect(() => {
     loadAdminData();
+
+    const messagesChannel = supabase
+      .channel("admin-messages-badge")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "messages",
+        },
+        () => {
+          loadAdminData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(messagesChannel);
+    };
   }, []);
 
   async function loadAdminData() {

@@ -53,6 +53,21 @@ export default function CustomerMenu() {
       loadUserAndCounts();
     });
 
+    const messagesChannel = supabase
+      .channel("customer-messages-badge")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "messages",
+        },
+        () => {
+          loadUserAndCounts();
+        }
+      )
+      .subscribe();
+
     return () => {
       listener.subscription.unsubscribe();
       window.removeEventListener("favorites-updated", updateFavoritesCount);
