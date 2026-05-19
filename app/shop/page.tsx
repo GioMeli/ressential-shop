@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { categories } from "@/data/categories";
 import { supabase } from "@/lib/supabase";
 import { addToCart } from "@/lib/cart";
@@ -295,7 +295,7 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
-export default function ShopPage() {
+function ShopContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -449,3 +449,18 @@ export default function ShopPage() {
     </main>
   );
 }
+
+export default function ShopPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-[#f8f3ed] p-10 text-center">
+          Loading shop...
+        </main>
+      }
+    >
+      <ShopContent />
+    </Suspense>
+  );
+}
+
