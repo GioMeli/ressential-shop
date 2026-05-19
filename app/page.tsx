@@ -7,6 +7,8 @@ import { supabase } from "@/lib/supabase";
 import CollectionNameSlider from "@/components/CollectionNameSlider";
 import HomeHero from "@/components/HomeHero";
 import GoodPriceSlider from "@/components/GoodPriceSlider";
+import LuxuryFooter from "@/components/LuxuryFooter";
+import TrustRotator from "@/components/TrustRotator";
 
 const categoryTiles = [
   {
@@ -116,13 +118,7 @@ export default function HomePage() {
         </div>
       )}
 
-      <section className="w-full border-b border-[#eadccc] bg-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 text-center text-xs text-[#5b4a42] md:flex-row md:items-center md:justify-center md:gap-10 md:text-sm">
-          <span>✦ Handmade in small batches</span>
-          <span>✦ Custom orders available</span>
-          <span>✦ Greece & Cyprus focused service</span>
-        </div>
-      </section>
+      <TrustRotator />
 
       <HomeHero />
 
@@ -148,45 +144,62 @@ export default function HomePage() {
 
       <GoodPriceSlider />
 
-      <section className="w-full bg-white py-10 md:py-14">
-        <div className="mx-auto grid max-w-[1600px] gap-5 px-3 md:grid-cols-[1.2fr_0.8fr] md:px-8">
-          <div className="rounded-[2rem] bg-[#2b211d] p-7 text-white md:p-12">
-            <p className="text-xs uppercase tracking-[0.35em] text-[#d6b488]">
-              Custom Studio
+      <section className="w-full bg-[#ead8cf] py-10">
+        <div className="mx-auto max-w-[1700px] px-4 md:px-8">
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#8a5f47]">
+              Your handmade gift journey
             </p>
 
-            <h2 className="mt-4 max-w-4xl text-3xl font-semibold md:text-5xl">
-              A future custom design experience built around the customer’s idea.
+            <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
+              From idea to meaningful gift
             </h2>
-
-            <p className="mt-5 max-w-3xl leading-8 text-white/75">
-              Customers will be able to choose a product type, describe their
-              preferred colors, text, names, dates and special details before
-              placing a custom request.
-            </p>
-
-            <a
-              href="/custom"
-              className="mt-7 inline-block rounded-full bg-white px-8 py-4 text-xs font-semibold uppercase tracking-widest text-[#2b211d]"
-            >
-              Preview Custom Page
-            </a>
           </div>
 
-          <div className="grid gap-5">
+          <div className="mx-auto mt-8 grid max-w-5xl grid-cols-3 gap-3">
             {[
-              ["Premium Finish", "Gold flakes, flowers, glitter and soft luxury details."],
-              ["Personalized Meaning", "Names, dates, messages and emotional symbols."],
-              ["Gift Ready", "Perfect for birthdays, weddings, baptisms and keepsakes."],
-            ].map(([title, text]) => (
+              {
+                step: "1",
+                title: "Choose",
+                text: "Select a handmade product.",
+              },
+              {
+                step: "2",
+                title: "Edit",
+                text: "Add color, name or details.",
+              },
+              {
+                step: "3",
+                title: "Gift",
+                text: "Receive a unique creation.",
+              },
+            ].map((item) => (
               <div
-                key={title}
-                className="rounded-[2rem] border border-[#eadccc] bg-[#fbf7f1] p-6"
+                key={item.step}
+                className="rounded-[1.5rem] bg-white/80 p-4 text-center shadow-sm md:p-6"
               >
-                <h3 className="text-xl font-semibold">{title}</h3>
-                <p className="mt-2 leading-7 text-[#6f625b]">{text}</p>
+                <p className="text-xs font-semibold tracking-[0.3em] text-[#b08a5b]">
+                  {item.step}
+                </p>
+
+                <h3 className="mt-3 text-lg font-semibold md:text-2xl">
+                  {item.title}
+                </h3>
+
+                <p className="mt-2 text-xs leading-5 text-[#6f625b] md:text-sm">
+                  {item.text}
+                </p>
               </div>
             ))}
+          </div>
+
+          <div className="mt-7 text-center">
+            <a
+              href="/shop"
+              className="inline-block rounded-full bg-[#2b211d] px-7 py-3 text-xs font-semibold uppercase tracking-widest text-white"
+            >
+              Start Shopping
+            </a>
           </div>
         </div>
       </section>
@@ -227,52 +240,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="border-t border-[#eadccc] bg-white px-4 py-10">
-        <div className="mx-auto grid max-w-[1600px] gap-8 text-sm text-[#6f625b] md:grid-cols-4 md:px-4">
-          <div>
-            <img
-              src="/images/logo.jpeg"
-              alt="Ressential logo"
-              className="h-16 w-16 rounded-full object-cover"
-            />
-            <p className="mt-4 leading-7">
-              Handmade resin art, soy candles and personalized gifts with
-              premium aesthetics.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-[#2b211d]">Shop</h4>
-            <div className="mt-4 space-y-2">
-              <p><a href="/shop">All Products</a></p>
-              <p><a href="/favorites">Favorites</a></p>
-              <p><a href="/cart">Basket</a></p>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-[#2b211d]">Customer Care</h4>
-            <div className="mt-4 space-y-2">
-              <p><a href="/account">My Orders</a></p>
-              <p><a href="/messages">Messages</a></p>
-              <p><a href="/contact">Contact</a></p>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-[#2b211d]">Coming Soon</h4>
-            <div className="mt-4 space-y-2">
-              <p><a href="/custom">Custom Designer</a></p>
-              <p>Shipping Information</p>
-              <p>Returns Policy</p>
-            </div>
-          </div>
-        </div>
-
-        <p className="mt-10 text-center text-xs text-[#8a7b72]">
-          © 2026 Ressential. All rights reserved.
-        </p>
-      </footer>
+      <LuxuryFooter />
     </main>
   );
 }

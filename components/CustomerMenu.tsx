@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { getCart } from "@/lib/cart";
 import { getFavorites } from "@/lib/favorites";
+import SmartSearch from "@/components/SmartSearch";
 
 export default function CustomerMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -109,13 +110,8 @@ export default function CustomerMenu() {
               <span>Ressential</span>
             </a>
 
-            <div className="hidden w-full max-w-xl items-center border-b border-[#d8c7b4] px-2 py-2 md:flex">
-              <span className="mr-3 text-xl text-[#8a7b72]">⌕</span>
-              <input
-                type="text"
-                placeholder="Search by product, category, or gift idea"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-[#b8aca5]"
-              />
+            <div className="hidden w-full max-w-xl md:block">
+              <SmartSearch />
             </div>
 
             <div className="hidden items-center gap-6 text-3xl md:flex">
@@ -255,12 +251,8 @@ export default function CustomerMenu() {
               </button>
             </div>
 
-            <div className="mt-6 border-b border-[#d8c7b4] px-2 py-3">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="w-full bg-transparent text-sm outline-none"
-              />
+            <div className="mt-6">
+              <SmartSearch mobile />
             </div>
 
             <nav className="mt-8 flex flex-col gap-5 text-lg">

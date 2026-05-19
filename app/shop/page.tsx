@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { addToCart } from "@/lib/cart";
 import CustomerNavbar from "@/components/CustomerMenu";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
+import { useSearchParams } from "next/navigation";
 
 type Product = {
   id: string;
@@ -301,6 +302,9 @@ export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortOption, setSortOption] = useState("default");
   const [bestSellerOnly, setBestSellerOnly] = useState(false);
+  
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
   useEffect(() => {
     async function loadProducts() {
@@ -329,6 +333,23 @@ export default function ShopPage() {
       );
     }
 
+    if (searchQuery) {
+      filtered = filtered.filter((product) => {
+        const searchableText = [
+          product.name,
+          product.category,
+          product.description,
+          product.badge,
+          product.size,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return searchableText.includes(searchQuery);
+      });
+    }
+
     if (bestSellerOnly) {
       filtered = filtered.filter((product) => product.is_best_seller);
     }
@@ -342,7 +363,7 @@ export default function ShopPage() {
     }
 
     return filtered;
-  }, [products, selectedCategory, sortOption, bestSellerOnly]);
+  }, [products, selectedCategory, sortOption, bestSellerOnly, searchQuery]);
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
