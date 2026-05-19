@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const collections = [
   "Soy Candles",
@@ -14,6 +14,14 @@ const collections = [
 
 export default function CollectionNameSlider() {
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % collections.length);
+    }, 2800);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const visibleCollections = [
     collections[index],
@@ -35,7 +43,6 @@ export default function CollectionNameSlider() {
         <button
           onClick={previous}
           className="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl shadow-md"
-          aria-label="Previous collection"
         >
           ‹
         </button>
@@ -45,15 +52,26 @@ export default function CollectionNameSlider() {
             Explore by collection
           </p>
 
-          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:items-center">
+          {/* Mobile: one item only */}
+          <div className="mt-8 md:hidden">
+            <a
+              href={`/shop?search=${encodeURIComponent(collections[index])}`}
+              className="block font-serif text-4xl text-[#2b211d]"
+            >
+              {collections[index]}
+            </a>
+          </div>
+
+          {/* Desktop: three items */}
+          <div className="mt-8 hidden grid-cols-3 gap-4 md:grid md:items-center">
             {visibleCollections.map((category, position) => (
               <a
                 key={`${category}-${position}`}
-                href={`/shop?category=${encodeURIComponent(category)}`}
-                className={`whitespace-normal text-center font-serif text-[#2b211d] transition hover:text-[#8a5f47] ${
+                href={`/shop?search=${encodeURIComponent(category)}`}
+                className={`text-center font-serif text-[#2b211d] transition hover:text-[#8a5f47] ${
                   position === 1
-                    ? "text-4xl md:text-5xl"
-                    : "text-3xl opacity-80 md:text-4xl"
+                    ? "text-5xl"
+                    : "text-4xl opacity-80"
                 }`}
               >
                 {category}
@@ -76,7 +94,6 @@ export default function CollectionNameSlider() {
         <button
           onClick={next}
           className="absolute right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl shadow-md"
-          aria-label="Next collection"
         >
           ›
         </button>
