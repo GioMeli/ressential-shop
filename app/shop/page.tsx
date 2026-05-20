@@ -1,12 +1,22 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { categories } from "@/data/categories";
+import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { addToCart } from "@/lib/cart";
 import CustomerNavbar from "@/components/CustomerMenu";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
-import { useSearchParams } from "next/navigation";
+
+type Category = {
+  id: string;
+  title: string;
+};
+
+type Subcategory = {
+  id: string;
+  category_id: string;
+  title: string;
+};
 
 type Product = {
   id: string;
@@ -14,14 +24,20 @@ type Product = {
   name: string;
   category: string;
   category_id: string;
+  subcategory_id: string | null;
   price: number;
   size: string | null;
   image: string;
   images: string[] | null;
   description: string | null;
+  short_description: string | null;
   badge: string | null;
   is_best_seller: boolean;
   is_active: boolean;
+  is_customizable: boolean;
+  allow_custom_text: boolean;
+  allow_color_choice: boolean;
+  custom_note_label: string | null;
 };
 
 const colorOptions = [
@@ -37,17 +53,16 @@ const colorOptions = [
 
 function ProductCard({ product }: { product: Product }) {
   const productImages =
-    product.images && product.images.length > 0
-      ? product.images
-      : [product.image];
+    product.images && product.images.length > 0 ? product.images : [product.image];
 
   const [imageIndex, setImageIndex] = useState(0);
   const [favoriteActive, setFavoriteActive] = useState(false);
-
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedColor, setSelectedColor] = useState("White");
+
+  const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [templateDescription, setTemplateDescription] = useState("");
+  const [customText, setCustomText] = useState("");
+  const [customNote, setCustomNote] = useState("");
 
   useEffect(() => {
     setFavoriteActive(isFavorite(product.id));
@@ -58,9 +73,7 @@ function ProductCard({ product }: { product: Product }) {
   }
 
   function previousImage() {
-    setImageIndex((prev) =>
-      prev === 0 ? productImages.length - 1 : prev - 1
-    );
+    setImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1));
   }
 
   function handleFavorite() {
@@ -77,7 +90,23 @@ function ProductCard({ product }: { product: Product }) {
     setFavoriteActive(active);
   }
 
-  function handleAddToBasket() {
+  function addDirectlyToBasket() {
+    addToCart({
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      price: Number(product.price),
+      image: productImages[0],
+      quantity: 1,
+      size: product.size || "",
+      color: "",
+      templateDescription: "",
+    });
+
+    alert(`${product.name} added to basket`);
+  }
+
+  function handleAddCustomToBasket() {
     addToCart({
       id: product.id,
       slug: product.slug,
@@ -86,8 +115,8 @@ function ProductCard({ product }: { product: Product }) {
       image: productImages[0],
       quantity,
       size: product.size || "",
-      color: selectedColor,
-      templateDescription,
+      color: product.allow_color_choice ? selectedColor : "",
+      templateDescription: [customText, customNote].filter(Boolean).join(" | "),
     });
 
     setModalOpen(false);
@@ -109,7 +138,6 @@ function ProductCard({ product }: { product: Product }) {
           <button
             onClick={handleFavorite}
             className="absolute right-2 top-2 z-10 rounded-full bg-white/90 px-3 py-2 text-lg shadow"
-            aria-label="Toggle favorite"
           >
             {favoriteActive ? "♥" : "♡"}
           </button>
@@ -125,7 +153,6 @@ function ProductCard({ product }: { product: Product }) {
               <button
                 onClick={previousImage}
                 className="absolute left-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg shadow"
-                aria-label="Previous image"
               >
                 ‹
               </button>
@@ -133,7 +160,6 @@ function ProductCard({ product }: { product: Product }) {
               <button
                 onClick={nextImage}
                 className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg shadow"
-                aria-label="Next image"
               >
                 ›
               </button>
@@ -156,10 +182,14 @@ function ProductCard({ product }: { product: Product }) {
             <p className="mt-1 text-[11px] text-[#6f625b]">{product.size}</p>
           )}
 
-          <p className="mt-1 text-sm font-semibold">€{Number(product.price)}</p>
+          <p className="mt-1 text-sm font-semibold">
+            €{Number(product.price).toFixed(2)}
+          </p>
 
           <button
-            onClick={() => setModalOpen(true)}
+            onClick={() =>
+              product.is_customizable ? setModalOpen(true) : addDirectlyToBasket()
+            }
             className="mt-3 w-full rounded-full bg-[#2b211d] px-3 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white"
           >
             Add to Basket
@@ -167,13 +197,12 @@ function ProductCard({ product }: { product: Product }) {
         </div>
       </div>
 
-      {modalOpen && (
+      {modalOpen && product.is_customizable && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 px-4">
           <div className="relative grid max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl md:grid-cols-[320px_1fr] md:p-10">
             <button
               onClick={() => setModalOpen(false)}
               className="absolute right-5 top-5 text-2xl"
-              aria-label="Close"
             >
               ×
             </button>
@@ -184,22 +213,6 @@ function ProductCard({ product }: { product: Product }) {
                 alt={product.name}
                 className="h-[360px] w-full rounded-[1.5rem] object-cover"
               />
-
-              {productImages.length > 1 && (
-                <div className="mt-4 grid grid-cols-3 gap-3">
-                  {productImages.map((image, index) => (
-                    <button key={image} onClick={() => setImageIndex(index)}>
-                      <img
-                        src={image}
-                        alt={`${product.name} ${index + 1}`}
-                        className={`h-24 w-full rounded-xl object-cover ${
-                          imageIndex === index ? "ring-2 ring-[#2b211d]" : ""
-                        }`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
 
             <div className="mt-8 md:mt-0 md:pl-10">
@@ -207,58 +220,68 @@ function ProductCard({ product }: { product: Product }) {
                 {product.category}
               </p>
 
-              <h2 className="mt-3 text-3xl font-semibold text-[#2b211d]">
-                {product.name}
-              </h2>
+              <h2 className="mt-3 text-3xl font-semibold">{product.name}</h2>
 
               <p className="mt-4 text-2xl font-bold">
-                €{Number(product.price)}
+                €{Number(product.price).toFixed(2)}
               </p>
 
-              {product.size && (
-                <p className="mt-2 text-sm text-[#6f625b]">
-                  Size: <strong>{product.size}</strong>
-                </p>
+              {product.short_description && (
+                <p className="mt-4 text-[#6f625b]">{product.short_description}</p>
               )}
 
-              <p className="mt-4 text-[#6f625b]">{product.description}</p>
+              {product.allow_custom_text && (
+                <div className="mt-6">
+                  <label className="mb-2 block text-sm font-semibold">
+                    Name or phrase
+                  </label>
 
-              <div className="mt-8">
-                <label className="mb-2 block text-sm font-semibold">
-                  Select Color
-                </label>
+                  <input
+                    value={customText}
+                    onChange={(e) => setCustomText(e.target.value)}
+                    placeholder="Example: Maria, Love you, 12/06/2026"
+                    className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+                  />
+                </div>
+              )}
 
-                <select
-                  value={selectedColor}
-                  onChange={(e) => setSelectedColor(e.target.value)}
-                  className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-                >
-                  {colorOptions.map((color) => (
-                    <option key={color} value={color}>
-                      {color}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {product.allow_color_choice && (
+                <div className="mt-6">
+                  <label className="mb-2 block text-sm font-semibold">
+                    Select Color
+                  </label>
+
+                  <select
+                    value={selectedColor}
+                    onChange={(e) => setSelectedColor(e.target.value)}
+                    className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+                  >
+                    <option value="">Select color</option>
+                    {colorOptions.map((color) => (
+                      <option key={color} value={color}>
+                        {color}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className="mt-6">
                 <label className="mb-2 block text-sm font-semibold">
-                  Describe Template / Custom Details
+                  {product.custom_note_label || "Custom details"}
                 </label>
 
                 <textarea
                   rows={4}
-                  value={templateDescription}
-                  onChange={(e) => setTemplateDescription(e.target.value)}
-                  placeholder="Example: I want gold flakes, white base, name Maria..."
+                  value={customNote}
+                  onChange={(e) => setCustomNote(e.target.value)}
+                  placeholder="Write any special details..."
                   className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
                 />
               </div>
 
               <div className="mt-6">
-                <label className="mb-2 block text-sm font-semibold">
-                  Quantity
-                </label>
+                <label className="mb-2 block text-sm font-semibold">Quantity</label>
 
                 <div className="flex w-fit items-center overflow-hidden rounded-xl border border-[#ddd0c0]">
                   <button
@@ -282,7 +305,7 @@ function ProductCard({ product }: { product: Product }) {
               </div>
 
               <button
-                onClick={handleAddToBasket}
+                onClick={handleAddCustomToBasket}
                 className="mt-8 w-full rounded-full bg-[#2b211d] px-8 py-4 text-sm font-semibold uppercase tracking-widest text-white"
               >
                 Add to Basket
@@ -296,33 +319,69 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 function ShopContent() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
 
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
+  const categoryQuery = searchParams.get("category") || "";
+  const subcategoryQuery = searchParams.get("subcategory") || "";
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(categoryQuery || "all");
+  const [selectedSubcategory, setSelectedSubcategory] = useState(
+    subcategoryQuery || "all"
+  );
   const [sortOption, setSortOption] = useState("default");
   const [bestSellerOnly, setBestSellerOnly] = useState(false);
-  
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
   useEffect(() => {
-    async function loadProducts() {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
+    setSelectedCategory(categoryQuery || "all");
+    setSelectedSubcategory(subcategoryQuery || "all");
+  }, [categoryQuery, subcategoryQuery]);
 
-      if (!error && data) {
-        setProducts(data);
-      }
+  useEffect(() => {
+    async function loadData() {
+      const [productsResult, categoriesResult, subcategoriesResult] =
+        await Promise.all([
+          supabase
+            .from("products")
+            .select("*")
+            .eq("is_active", true)
+            .order("created_at", { ascending: false }),
+
+          supabase
+            .from("categories")
+            .select("id, title")
+            .eq("is_active", true)
+            .order("title", { ascending: true }),
+
+          supabase
+            .from("subcategories")
+            .select("id, category_id, title")
+            .eq("is_active", true)
+            .order("title", { ascending: true }),
+        ]);
+
+      if (productsResult.data) setProducts(productsResult.data);
+      if (categoriesResult.data) setCategories(categoriesResult.data);
+      if (subcategoriesResult.data) setSubcategories(subcategoriesResult.data);
 
       setLoading(false);
     }
 
-    loadProducts();
+    loadData();
   }, []);
+
+  const filteredSubcategories = useMemo(() => {
+    if (selectedCategory === "all") return subcategories;
+
+    return subcategories.filter(
+      (subcategory) => subcategory.category_id === selectedCategory
+    );
+  }, [subcategories, selectedCategory]);
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
@@ -333,12 +392,19 @@ function ShopContent() {
       );
     }
 
+    if (selectedSubcategory !== "all") {
+      filtered = filtered.filter(
+        (product) => product.subcategory_id === selectedSubcategory
+      );
+    }
+
     if (searchQuery) {
       filtered = filtered.filter((product) => {
         const searchableText = [
           product.name,
           product.category,
           product.description,
+          product.short_description,
           product.badge,
           product.size,
         ]
@@ -363,7 +429,14 @@ function ShopContent() {
     }
 
     return filtered;
-  }, [products, selectedCategory, sortOption, bestSellerOnly, searchQuery]);
+  }, [
+    products,
+    selectedCategory,
+    selectedSubcategory,
+    sortOption,
+    bestSellerOnly,
+    searchQuery,
+  ]);
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
@@ -385,10 +458,13 @@ function ShopContent() {
         </div>
 
         <div className="sticky top-[65px] z-40 mt-8 border-y border-[#eadccc] bg-[#f8f3ed]/95 py-3 backdrop-blur-md">
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             <select
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                setSelectedSubcategory("all");
+              }}
               className="border border-[#ddd0c0] bg-white px-3 py-3 text-xs outline-none md:text-sm"
             >
               <option value="all">All Categories</option>
@@ -396,6 +472,20 @@ function ShopContent() {
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.title}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={selectedSubcategory}
+              onChange={(e) => setSelectedSubcategory(e.target.value)}
+              className="border border-[#ddd0c0] bg-white px-3 py-3 text-xs outline-none md:text-sm"
+            >
+              <option value="all">All Subcategories</option>
+
+              {filteredSubcategories.map((subcategory) => (
+                <option key={subcategory.id} value={subcategory.id}>
+                  {subcategory.title}
                 </option>
               ))}
             </select>
@@ -412,7 +502,7 @@ function ShopContent() {
 
             <button
               onClick={() => setBestSellerOnly(!bestSellerOnly)}
-              className={`col-span-2 border px-3 py-3 text-xs font-semibold uppercase tracking-widest md:col-span-1 ${
+              className={`border px-3 py-3 text-xs font-semibold uppercase tracking-widest ${
                 bestSellerOnly
                   ? "border-[#2b211d] bg-[#2b211d] text-white"
                   : "border-[#ddd0c0] bg-white text-[#2b211d]"
@@ -441,7 +531,7 @@ function ShopContent() {
           <div className="mt-12 rounded-[2rem] bg-white p-10 text-center">
             <h2 className="text-3xl font-semibold">No products found</h2>
             <p className="mt-3 text-[#6f625b]">
-              Try another category or filter.
+              Try another category, subcategory or filter.
             </p>
           </div>
         )}
@@ -463,4 +553,3 @@ export default function ShopPage() {
     </Suspense>
   );
 }
-

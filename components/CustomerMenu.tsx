@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { getCart } from "@/lib/cart";
 import { getFavorites } from "@/lib/favorites";
 import SmartSearch from "@/components/SmartSearch";
+import MegaCategoryMenu from "@/components/MegaCategoryMenu";
 
 export default function CustomerMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -197,9 +198,7 @@ export default function CustomerMenu() {
 
         <nav className="hidden border-b border-[#eadccc] md:block">
           <div className="mx-auto flex max-w-7xl items-center justify-center gap-10 px-6 py-3 text-sm font-medium">
-            <a href="/shop" className="hover:text-[#b08a5b]">
-              Shop
-            </a>
+            <MegaCategoryMenu />
 
             <a href="/custom" className="hover:text-[#b08a5b]">
               Custom
