@@ -53,7 +53,9 @@ const colorOptions = [
 
 function ProductCard({ product }: { product: Product }) {
   const productImages =
-    product.images && product.images.length > 0 ? product.images : [product.image];
+    product.images && product.images.length > 0
+      ? product.images
+      : [product.image];
 
   const [imageIndex, setImageIndex] = useState(0);
   const [favoriteActive, setFavoriteActive] = useState(false);
@@ -73,7 +75,9 @@ function ProductCard({ product }: { product: Product }) {
   }
 
   function previousImage() {
-    setImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1));
+    setImageIndex((prev) =>
+      prev === 0 ? productImages.length - 1 : prev - 1
+    );
   }
 
   function handleFavorite() {
@@ -125,19 +129,20 @@ function ProductCard({ product }: { product: Product }) {
 
   return (
     <>
-      <div className="group bg-white">
-        <div className="relative aspect-[3/4] overflow-hidden bg-[#f3eee8]">
+      <div className="group bg-white text-center">
+        <div className="relative aspect-[3/4] overflow-hidden bg-white">
           <a href={`/products/${product.slug}`}>
             <img
               src={productImages[imageIndex]}
               alt={product.name}
-              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              className="h-full w-full object-contain p-2 transition duration-500 group-hover:scale-105 md:p-4"
             />
           </a>
 
           <button
             onClick={handleFavorite}
-            className="absolute right-2 top-2 z-10 rounded-full bg-white/90 px-3 py-2 text-lg shadow"
+            className="absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-lg shadow"
+            aria-label="Favorite"
           >
             {favoriteActive ? "♥" : "♡"}
           </button>
@@ -153,6 +158,7 @@ function ProductCard({ product }: { product: Product }) {
               <button
                 onClick={previousImage}
                 className="absolute left-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg shadow"
+                aria-label="Previous image"
               >
                 ‹
               </button>
@@ -160,6 +166,7 @@ function ProductCard({ product }: { product: Product }) {
               <button
                 onClick={nextImage}
                 className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg shadow"
+                aria-label="Next image"
               >
                 ›
               </button>
@@ -167,30 +174,34 @@ function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
-        <div className="px-2 py-3 text-center">
-          <p className="text-[10px] uppercase tracking-[0.16em] text-[#b08a5b]">
+        <div className="px-2 pb-6 pt-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#2b211d]">
             {product.category}
           </p>
 
           <a href={`/products/${product.slug}`}>
-            <h3 className="mt-2 min-h-[42px] text-xs font-semibold leading-5 text-[#2b211d] md:text-sm">
+            <h3 className="mx-auto mt-2 min-h-[44px] max-w-[250px] text-sm font-medium leading-6 text-[#6f625b]">
               {product.name}
             </h3>
           </a>
 
           {product.size && (
-            <p className="mt-1 text-[11px] text-[#6f625b]">{product.size}</p>
+            <p className="mt-2 min-h-[18px] text-xs text-[#8a7b72]">
+              {product.size}
+            </p>
           )}
 
-          <p className="mt-1 text-sm font-semibold">
+          <p className="mt-2 text-sm font-semibold text-[#2b211d]">
             €{Number(product.price).toFixed(2)}
           </p>
 
           <button
             onClick={() =>
-              product.is_customizable ? setModalOpen(true) : addDirectlyToBasket()
+              product.is_customizable
+                ? setModalOpen(true)
+                : addDirectlyToBasket()
             }
-            className="mt-3 w-full rounded-full bg-[#2b211d] px-3 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white"
+            className="mx-auto mt-4 block rounded-full bg-[#2b211d] px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-white md:px-6"
           >
             Add to Basket
           </button>
@@ -207,13 +218,11 @@ function ProductCard({ product }: { product: Product }) {
               ×
             </button>
 
-            <div>
-              <img
-                src={productImages[imageIndex]}
-                alt={product.name}
-                className="h-[360px] w-full rounded-[1.5rem] object-cover"
-              />
-            </div>
+            <img
+              src={productImages[imageIndex]}
+              alt={product.name}
+              className="h-[320px] w-full rounded-[1.5rem] object-contain"
+            />
 
             <div className="mt-8 md:mt-0 md:pl-10">
               <p className="text-xs uppercase tracking-[0.25em] text-[#b08a5b]">
@@ -227,7 +236,9 @@ function ProductCard({ product }: { product: Product }) {
               </p>
 
               {product.short_description && (
-                <p className="mt-4 text-[#6f625b]">{product.short_description}</p>
+                <p className="mt-4 text-[#6f625b]">
+                  {product.short_description}
+                </p>
               )}
 
               {product.allow_custom_text && (
@@ -281,7 +292,9 @@ function ProductCard({ product }: { product: Product }) {
               </div>
 
               <div className="mt-6">
-                <label className="mb-2 block text-sm font-semibold">Quantity</label>
+                <label className="mb-2 block text-sm font-semibold">
+                  Quantity
+                </label>
 
                 <div className="flex w-fit items-center overflow-hidden rounded-xl border border-[#ddd0c0]">
                   <button
@@ -318,6 +331,159 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
+type FiltersProps = {
+  categories: Category[];
+  subcategories: Subcategory[];
+  selectedCategory: string;
+  selectedSubcategory: string;
+  minPrice: string;
+  maxPrice: string;
+  bestSellerOnly: boolean;
+  customizableOnly: boolean;
+  setSelectedCategory: (value: string) => void;
+  setSelectedSubcategory: (value: string) => void;
+  setMinPrice: (value: string) => void;
+  setMaxPrice: (value: string) => void;
+  setBestSellerOnly: (value: boolean) => void;
+  setCustomizableOnly: (value: boolean) => void;
+};
+
+function FilterPanel({
+  categories,
+  subcategories,
+  selectedCategory,
+  selectedSubcategory,
+  minPrice,
+  maxPrice,
+  bestSellerOnly,
+  customizableOnly,
+  setSelectedCategory,
+  setSelectedSubcategory,
+  setMinPrice,
+  setMaxPrice,
+  setBestSellerOnly,
+  setCustomizableOnly,
+}: FiltersProps) {
+  const filteredSubcategories =
+    selectedCategory === "all"
+      ? subcategories
+      : subcategories.filter((item) => item.category_id === selectedCategory);
+
+  return (
+    <div className="space-y-0 bg-white">
+      <div className="border-b border-[#eadccc] p-5">
+        <h2 className="text-xl font-semibold">Filters</h2>
+      </div>
+
+      <div className="border-b border-[#eadccc] p-5">
+        <p className="mb-4 font-semibold">Categories</p>
+
+        <div className="space-y-3">
+          <label className="flex cursor-pointer items-center gap-3 text-sm">
+            <input
+              type="radio"
+              checked={selectedCategory === "all"}
+              onChange={() => {
+                setSelectedCategory("all");
+                setSelectedSubcategory("all");
+              }}
+            />
+            All Categories
+          </label>
+
+          {categories.map((category) => (
+            <label
+              key={category.id}
+              className="flex cursor-pointer items-center gap-3 text-sm"
+            >
+              <input
+                type="radio"
+                checked={selectedCategory === category.id}
+                onChange={() => {
+                  setSelectedCategory(category.id);
+                  setSelectedSubcategory("all");
+                }}
+              />
+              {category.title}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="border-b border-[#eadccc] p-5">
+        <p className="mb-4 font-semibold">Subcategories</p>
+
+        <div className="max-h-[240px] space-y-3 overflow-y-auto pr-2">
+          <label className="flex cursor-pointer items-center gap-3 text-sm">
+            <input
+              type="radio"
+              checked={selectedSubcategory === "all"}
+              onChange={() => setSelectedSubcategory("all")}
+            />
+            All Subcategories
+          </label>
+
+          {filteredSubcategories.map((subcategory) => (
+            <label
+              key={subcategory.id}
+              className="flex cursor-pointer items-center gap-3 text-sm"
+            >
+              <input
+                type="radio"
+                checked={selectedSubcategory === subcategory.id}
+                onChange={() => setSelectedSubcategory(subcategory.id)}
+              />
+              {subcategory.title}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="border-b border-[#eadccc] p-5">
+        <p className="mb-4 font-semibold">Price</p>
+
+        <div className="grid grid-cols-2 gap-3">
+          <input
+            type="number"
+            placeholder="Min"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="w-full border border-[#ddd0c0] px-4 py-3 text-sm outline-none"
+          />
+
+          <input
+            type="number"
+            placeholder="Max"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="w-full border border-[#ddd0c0] px-4 py-3 text-sm outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4 p-5">
+        <label className="flex cursor-pointer items-center gap-3 text-sm">
+          <input
+            type="checkbox"
+            checked={bestSellerOnly}
+            onChange={(e) => setBestSellerOnly(e.target.checked)}
+          />
+          Best Sellers
+        </label>
+
+        <label className="flex cursor-pointer items-center gap-3 text-sm">
+          <input
+            type="checkbox"
+            checked={customizableOnly}
+            onChange={(e) => setCustomizableOnly(e.target.checked)}
+          />
+          Customizable Products
+        </label>
+      </div>
+    </div>
+  );
+}
+
 function ShopContent() {
   const searchParams = useSearchParams();
 
@@ -330,12 +496,21 @@ function ShopContent() {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
 
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState(categoryQuery || "all");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
+
+  const [selectedCategory, setSelectedCategory] = useState(
+    categoryQuery || "all"
+  );
   const [selectedSubcategory, setSelectedSubcategory] = useState(
     subcategoryQuery || "all"
   );
-  const [sortOption, setSortOption] = useState("default");
+
+  const [sortOption, setSortOption] = useState("newest");
   const [bestSellerOnly, setBestSellerOnly] = useState(false);
+  const [customizableOnly, setCustomizableOnly] = useState(false);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   useEffect(() => {
     setSelectedCategory(categoryQuery || "all");
@@ -375,13 +550,15 @@ function ShopContent() {
     loadData();
   }, []);
 
-  const filteredSubcategories = useMemo(() => {
-    if (selectedCategory === "all") return subcategories;
+  const activeCategory = categories.find((item) => item.id === selectedCategory);
+  const activeSubcategory = subcategories.find(
+    (item) => item.id === selectedSubcategory
+  );
 
-    return subcategories.filter(
-      (subcategory) => subcategory.category_id === selectedCategory
-    );
-  }, [subcategories, selectedCategory]);
+  const pageTitle =
+    activeSubcategory?.title ||
+    activeCategory?.title ||
+    (searchQuery ? `Search: ${searchQuery}` : "All Products");
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
@@ -420,12 +597,32 @@ function ShopContent() {
       filtered = filtered.filter((product) => product.is_best_seller);
     }
 
+    if (customizableOnly) {
+      filtered = filtered.filter((product) => product.is_customizable);
+    }
+
+    if (minPrice) {
+      filtered = filtered.filter(
+        (product) => Number(product.price) >= Number(minPrice)
+      );
+    }
+
+    if (maxPrice) {
+      filtered = filtered.filter(
+        (product) => Number(product.price) <= Number(maxPrice)
+      );
+    }
+
     if (sortOption === "low-high") {
       filtered.sort((a, b) => Number(a.price) - Number(b.price));
     }
 
     if (sortOption === "high-low") {
       filtered.sort((a, b) => Number(b.price) - Number(a.price));
+    }
+
+    if (sortOption === "name") {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     return filtered;
@@ -435,107 +632,216 @@ function ShopContent() {
     selectedSubcategory,
     sortOption,
     bestSellerOnly,
+    customizableOnly,
+    minPrice,
+    maxPrice,
     searchQuery,
   ]);
 
   return (
-    <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
+    <main className="min-h-screen bg-white text-[#2b211d]">
       <CustomerNavbar />
 
-      <section className="mx-auto max-w-7xl px-3 py-8 md:px-6 md:py-14">
-        <div className="text-center">
-          <p className="mb-3 text-xs uppercase tracking-[0.3em] text-[#b08a5b] md:text-sm">
-            Ressential Shop
-          </p>
+      <div className="grid lg:grid-cols-[300px_1fr]">
+        <aside className="sticky top-0 hidden h-screen overflow-y-auto border-r border-[#eadccc] bg-white lg:block">
+          <FilterPanel
+            categories={categories}
+            subcategories={subcategories}
+            selectedCategory={selectedCategory}
+            selectedSubcategory={selectedSubcategory}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            bestSellerOnly={bestSellerOnly}
+            customizableOnly={customizableOnly}
+            setSelectedCategory={setSelectedCategory}
+            setSelectedSubcategory={setSelectedSubcategory}
+            setMinPrice={setMinPrice}
+            setMaxPrice={setMaxPrice}
+            setBestSellerOnly={setBestSellerOnly}
+            setCustomizableOnly={setCustomizableOnly}
+          />
+        </aside>
 
-          <h1 className="text-3xl font-semibold md:text-6xl">
-            All handmade products
-          </h1>
+        <section className="min-w-0 px-4 py-6 lg:px-8">
+          <div className="mb-5 flex items-center justify-between gap-4">
+            <div className="text-sm">
+              <a href="/" className="font-medium">
+                Home
+              </a>
+              <span className="mx-3">›</span>
+              <a href="/shop" className="font-medium">
+                Shop
+              </a>
+              <span className="mx-3">›</span>
+              <span>{pageTitle}</span>
+            </div>
 
-          <p className="mx-auto mt-4 max-w-2xl text-sm text-[#6f625b] md:text-base">
-            Browse handmade resin art, soy candles, gifts and custom creations.
-          </p>
-        </div>
+            <div className="relative hidden lg:block">
+              <button
+                onClick={() => setSortOpen(!sortOpen)}
+                className="text-sm font-semibold"
+              >
+                Sort by :{" "}
+                {sortOption === "newest"
+                  ? "Newest First"
+                  : sortOption === "low-high"
+                  ? "Price Low to High"
+                  : sortOption === "high-low"
+                  ? "Price High to Low"
+                  : "Name"}{" "}
+               ⌄
+              </button>
 
-        <div className="sticky top-[65px] z-40 mt-8 border-y border-[#eadccc] bg-[#f8f3ed]/95 py-3 backdrop-blur-md">
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-            <select
-              value={selectedCategory}
-              onChange={(e) => {
-                setSelectedCategory(e.target.value);
-                setSelectedSubcategory("all");
-              }}
-              className="border border-[#ddd0c0] bg-white px-3 py-3 text-xs outline-none md:text-sm"
+              {sortOpen && (
+                <div className="absolute right-0 top-full z-40 mt-3 w-56 rounded-xl border border-[#eadccc] bg-white p-3 shadow-xl">
+                  {[
+                    ["newest", "Newest First"],
+                    ["low-high", "Price Low to High"],
+                    ["high-low", "Price High to Low"],
+                    ["name", "Name"],
+                  ].map(([value, label]) => (
+                    <button
+                      key={value}
+                      onClick={() => {
+                        setSortOption(value);
+                        setSortOpen(false);
+                      }}
+                      className="block w-full rounded-lg px-4 py-3 text-left text-sm hover:bg-[#f8f3ed]"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-0 flex items-center justify-between border-y border-[#eadccc] py-3 lg:hidden">
+            <button
+              onClick={() => setSortOpen(true)}
+              className="flex flex-1 items-center justify-center gap-2 border-r border-[#eadccc] text-sm"
             >
-              <option value="all">All Categories</option>
-
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.title}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={selectedSubcategory}
-              onChange={(e) => setSelectedSubcategory(e.target.value)}
-              className="border border-[#ddd0c0] bg-white px-3 py-3 text-xs outline-none md:text-sm"
-            >
-              <option value="all">All Subcategories</option>
-
-              {filteredSubcategories.map((subcategory) => (
-                <option key={subcategory.id} value={subcategory.id}>
-                  {subcategory.title}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-              className="border border-[#ddd0c0] bg-white px-3 py-3 text-xs outline-none md:text-sm"
-            >
-              <option value="default">Sort by</option>
-              <option value="low-high">Price: Low to High</option>
-              <option value="high-low">Price: High to Low</option>
-            </select>
+              ☰ Sort
+            </button>
 
             <button
-              onClick={() => setBestSellerOnly(!bestSellerOnly)}
-              className={`border px-3 py-3 text-xs font-semibold uppercase tracking-widest ${
-                bestSellerOnly
-                  ? "border-[#2b211d] bg-[#2b211d] text-white"
-                  : "border-[#ddd0c0] bg-white text-[#2b211d]"
-              }`}
+              onClick={() => setFilterOpen(true)}
+              className="flex flex-1 items-center justify-center gap-2 text-sm"
             >
-              Best Sellers
+              ⚱ Filter
             </button>
           </div>
-        </div>
 
-        {loading && (
-          <div className="mt-12 rounded-[2rem] bg-white p-10 text-center">
-            Loading products...
-          </div>
-        )}
+          <div className="border-b border-[#eadccc] pb-4 pt-0">
+            <h1 className="hidden text-4xl font-semibold text-[#40506b] md:block md:text-6xl">
+              {pageTitle}
+            </h1>
 
-        {!loading && (
-          <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-4 lg:grid-cols-5">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+            <div className="mt-0 bg-[#ead8cf] px-4 py-4 text-center md:mt-5 md:px-5 md:py-6">
+              <p className="font-serif text-2xl leading-snug text-[#2b211d] md:text-5xl">
+                Handmade pieces for meaningful moments
+              </p>
+            </div>
 
-        {!loading && filteredProducts.length === 0 && (
-          <div className="mt-12 rounded-[2rem] bg-white p-10 text-center">
-            <h2 className="text-3xl font-semibold">No products found</h2>
-            <p className="mt-3 text-[#6f625b]">
-              Try another category, subcategory or filter.
+            <p className="mt-3 text-sm text-[#6f625b]">
+              {filteredProducts.length} products found
             </p>
           </div>
-        )}
-      </section>
+
+          {loading && (
+            <div className="mt-12 rounded-[2rem] bg-[#f8f3ed] p-10 text-center">
+              Loading products...
+            </div>
+          )}
+
+          {!loading && (
+            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 xl:grid-cols-4">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+
+          {!loading && filteredProducts.length === 0 && (
+            <div className="mt-12 rounded-[2rem] bg-[#f8f3ed] p-10 text-center">
+              <h2 className="text-3xl font-semibold">No products found</h2>
+              <p className="mt-3 text-[#6f625b]">
+                Try another category, subcategory or filter.
+              </p>
+            </div>
+          )}
+        </section>
+      </div>
+
+      {filterOpen && (
+        <div className="fixed inset-0 z-[999] bg-black/40 lg:hidden">
+          <aside className="h-full w-[86%] max-w-sm overflow-y-auto bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#eadccc] p-5">
+              <h2 className="text-xl font-semibold">Filters</h2>
+              <button onClick={() => setFilterOpen(false)} className="text-2xl">
+                ×
+              </button>
+            </div>
+
+            <FilterPanel
+              categories={categories}
+              subcategories={subcategories}
+              selectedCategory={selectedCategory}
+              selectedSubcategory={selectedSubcategory}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              bestSellerOnly={bestSellerOnly}
+              customizableOnly={customizableOnly}
+              setSelectedCategory={setSelectedCategory}
+              setSelectedSubcategory={setSelectedSubcategory}
+              setMinPrice={setMinPrice}
+              setMaxPrice={setMaxPrice}
+              setBestSellerOnly={setBestSellerOnly}
+              setCustomizableOnly={setCustomizableOnly}
+            />
+
+            <div className="p-5">
+              <button
+                onClick={() => setFilterOpen(false)}
+                className="w-full rounded-full bg-[#2b211d] px-6 py-4 text-xs font-semibold uppercase tracking-widest text-white"
+              >
+                Show Products
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {sortOpen && (
+        <div className="fixed inset-0 z-[999] bg-black/40 lg:hidden">
+          <div className="absolute bottom-0 left-0 right-0 rounded-t-[2rem] bg-white p-6">
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Sort by</h2>
+              <button onClick={() => setSortOpen(false)} className="text-2xl">
+                ×
+              </button>
+            </div>
+
+            {[
+              ["newest", "Newest First"],
+              ["low-high", "Price Low to High"],
+              ["high-low", "Price High to Low"],
+              ["name", "Name"],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                onClick={() => {
+                  setSortOption(value);
+                  setSortOpen(false);
+                }}
+                className="block w-full border-b border-[#eadccc] px-4 py-4 text-left"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

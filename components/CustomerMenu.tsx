@@ -6,6 +6,7 @@ import { getCart } from "@/lib/cart";
 import { getFavorites } from "@/lib/favorites";
 import SmartSearch from "@/components/SmartSearch";
 import MegaCategoryMenu from "@/components/MegaCategoryMenu";
+import MobileCategoryAccordion from "@/components/MobileCategoryAccordion";
 
 export default function CustomerMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -254,6 +255,8 @@ export default function CustomerMenu() {
               <SmartSearch mobile />
             </div>
 
+            <MobileCategoryAccordion />
+
             <nav className="mt-8 flex flex-col gap-5 text-lg">
               <a href="/shop">Shop</a>
               <a href="/custom">Create Your Own</a>
@@ -275,6 +278,16 @@ export default function CustomerMenu() {
                 Logout
               </button>
             )}
+
+            <a
+            href="https://www.instagram.com/ressential_experience/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 flex items-center justify-center gap-2 rounded-full border border-[#eadccc] bg-white px-5 py-3 text-sm font-semibold text-[#2b211d]"
+          >
+            <span className="text-xl">📷</span>
+            Instagram
+          </a>
           </aside>
         </div>
       )}
