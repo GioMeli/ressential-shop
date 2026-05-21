@@ -38,6 +38,7 @@ type Product = {
   allow_custom_text: boolean;
   allow_color_choice: boolean;
   custom_note_label: string | null;
+  created_at?: string;
 };
 
 const colorOptions = [
@@ -336,12 +337,15 @@ type FiltersProps = {
   subcategories: Subcategory[];
   selectedCategory: string;
   selectedSubcategory: string;
+  selectedBadge: string;
   minPrice: string;
   maxPrice: string;
   bestSellerOnly: boolean;
   customizableOnly: boolean;
+  availableBadges: string[];
   setSelectedCategory: (value: string) => void;
   setSelectedSubcategory: (value: string) => void;
+  setSelectedBadge: (value: string) => void;
   setMinPrice: (value: string) => void;
   setMaxPrice: (value: string) => void;
   setBestSellerOnly: (value: boolean) => void;
@@ -353,12 +357,15 @@ function FilterPanel({
   subcategories,
   selectedCategory,
   selectedSubcategory,
+  selectedBadge,
   minPrice,
   maxPrice,
   bestSellerOnly,
   customizableOnly,
+  availableBadges,
   setSelectedCategory,
   setSelectedSubcategory,
+  setSelectedBadge,
   setMinPrice,
   setMaxPrice,
   setBestSellerOnly,
@@ -369,10 +376,29 @@ function FilterPanel({
       ? subcategories
       : subcategories.filter((item) => item.category_id === selectedCategory);
 
+  function clearFilters() {
+    setSelectedCategory("all");
+    setSelectedSubcategory("all");
+    setSelectedBadge("all");
+    setMinPrice("");
+    setMaxPrice("");
+    setBestSellerOnly(false);
+    setCustomizableOnly(false);
+  }
+
   return (
     <div className="space-y-0 bg-white">
       <div className="border-b border-[#eadccc] p-5">
-        <h2 className="text-xl font-semibold">Filters</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">Filters</h2>
+
+          <button
+            onClick={clearFilters}
+            className="text-xs font-semibold uppercase tracking-widest text-[#b08a5b]"
+          >
+            Clear
+          </button>
+        </div>
       </div>
 
       <div className="border-b border-[#eadccc] p-5">
@@ -434,6 +460,35 @@ function FilterPanel({
                 onChange={() => setSelectedSubcategory(subcategory.id)}
               />
               {subcategory.title}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="border-b border-[#eadccc] p-5">
+        <p className="mb-4 font-semibold">Badge</p>
+
+        <div className="space-y-3">
+          <label className="flex cursor-pointer items-center gap-3 text-sm">
+            <input
+              type="radio"
+              checked={selectedBadge === "all"}
+              onChange={() => setSelectedBadge("all")}
+            />
+            All Badges
+          </label>
+
+          {availableBadges.map((badge) => (
+            <label
+              key={badge}
+              className="flex cursor-pointer items-center gap-3 text-sm"
+            >
+              <input
+                type="radio"
+                checked={selectedBadge === badge}
+                onChange={() => setSelectedBadge(badge)}
+              />
+              {badge}
             </label>
           ))}
         </div>
@@ -507,6 +562,7 @@ function ShopContent() {
   );
 
   const [sortOption, setSortOption] = useState("newest");
+  const [selectedBadge, setSelectedBadge] = useState("all");
   const [bestSellerOnly, setBestSellerOnly] = useState(false);
   const [customizableOnly, setCustomizableOnly] = useState(false);
   const [minPrice, setMinPrice] = useState("");
@@ -549,6 +605,16 @@ function ShopContent() {
 
     loadData();
   }, []);
+
+  const availableBadges = useMemo(() => {
+    return Array.from(
+      new Set(
+        products
+          .map((product) => product.badge)
+          .filter((badge): badge is string => Boolean(badge))
+      )
+    ).sort();
+  }, [products]);
 
   const activeCategory = categories.find((item) => item.id === selectedCategory);
   const activeSubcategory = subcategories.find(
@@ -593,6 +659,10 @@ function ShopContent() {
       });
     }
 
+    if (selectedBadge !== "all") {
+      filtered = filtered.filter((product) => product.badge === selectedBadge);
+    }
+
     if (bestSellerOnly) {
       filtered = filtered.filter((product) => product.is_best_seller);
     }
@@ -625,11 +695,18 @@ function ShopContent() {
       filtered.sort((a, b) => a.name.localeCompare(b.name));
     }
 
+    if (sortOption === "best-sellers") {
+      filtered.sort(
+        (a, b) => Number(b.is_best_seller) - Number(a.is_best_seller)
+      );
+    }
+
     return filtered;
   }, [
     products,
     selectedCategory,
     selectedSubcategory,
+    selectedBadge,
     sortOption,
     bestSellerOnly,
     customizableOnly,
@@ -638,32 +715,37 @@ function ShopContent() {
     searchQuery,
   ]);
 
+  const filtersProps = {
+    categories,
+    subcategories,
+    selectedCategory,
+    selectedSubcategory,
+    selectedBadge,
+    minPrice,
+    maxPrice,
+    bestSellerOnly,
+    customizableOnly,
+    availableBadges,
+    setSelectedCategory,
+    setSelectedSubcategory,
+    setSelectedBadge,
+    setMinPrice,
+    setMaxPrice,
+    setBestSellerOnly,
+    setCustomizableOnly,
+  };
+
   return (
     <main className="min-h-screen bg-white text-[#2b211d]">
       <CustomerNavbar />
 
       <div className="grid lg:grid-cols-[300px_1fr]">
         <aside className="sticky top-0 hidden h-screen overflow-y-auto border-r border-[#eadccc] bg-white lg:block">
-          <FilterPanel
-            categories={categories}
-            subcategories={subcategories}
-            selectedCategory={selectedCategory}
-            selectedSubcategory={selectedSubcategory}
-            minPrice={minPrice}
-            maxPrice={maxPrice}
-            bestSellerOnly={bestSellerOnly}
-            customizableOnly={customizableOnly}
-            setSelectedCategory={setSelectedCategory}
-            setSelectedSubcategory={setSelectedSubcategory}
-            setMinPrice={setMinPrice}
-            setMaxPrice={setMaxPrice}
-            setBestSellerOnly={setBestSellerOnly}
-            setCustomizableOnly={setCustomizableOnly}
-          />
+          <FilterPanel {...filtersProps} />
         </aside>
 
-        <section className="min-w-0 px-4 py-6 lg:px-8">
-          <div className="mb-5 flex items-center justify-between gap-4">
+        <section className="min-w-0 px-4 py-0 lg:px-8 lg:py-6">
+          <div className="mb-5 hidden items-center justify-between gap-4 lg:flex">
             <div className="text-sm">
               <a href="/" className="font-medium">
                 Home
@@ -676,7 +758,7 @@ function ShopContent() {
               <span>{pageTitle}</span>
             </div>
 
-            <div className="relative hidden lg:block">
+            <div className="relative">
               <button
                 onClick={() => setSortOpen(!sortOpen)}
                 className="text-sm font-semibold"
@@ -688,8 +770,10 @@ function ShopContent() {
                   ? "Price Low to High"
                   : sortOption === "high-low"
                   ? "Price High to Low"
+                  : sortOption === "best-sellers"
+                  ? "Best Sellers"
                   : "Name"}{" "}
-               ⌄
+                ⌄
               </button>
 
               {sortOpen && (
@@ -698,6 +782,7 @@ function ShopContent() {
                     ["newest", "Newest First"],
                     ["low-high", "Price Low to High"],
                     ["high-low", "Price High to Low"],
+                    ["best-sellers", "Best Sellers"],
                     ["name", "Name"],
                   ].map(([value, label]) => (
                     <button
@@ -783,22 +868,7 @@ function ShopContent() {
               </button>
             </div>
 
-            <FilterPanel
-              categories={categories}
-              subcategories={subcategories}
-              selectedCategory={selectedCategory}
-              selectedSubcategory={selectedSubcategory}
-              minPrice={minPrice}
-              maxPrice={maxPrice}
-              bestSellerOnly={bestSellerOnly}
-              customizableOnly={customizableOnly}
-              setSelectedCategory={setSelectedCategory}
-              setSelectedSubcategory={setSelectedSubcategory}
-              setMinPrice={setMinPrice}
-              setMaxPrice={setMaxPrice}
-              setBestSellerOnly={setBestSellerOnly}
-              setCustomizableOnly={setCustomizableOnly}
-            />
+            <FilterPanel {...filtersProps} />
 
             <div className="p-5">
               <button
@@ -826,6 +896,7 @@ function ShopContent() {
               ["newest", "Newest First"],
               ["low-high", "Price Low to High"],
               ["high-low", "Price High to Low"],
+              ["best-sellers", "Best Sellers"],
               ["name", "Name"],
             ].map(([value, label]) => (
               <button
