@@ -371,10 +371,9 @@ function FilterPanel({
   setBestSellerOnly,
   setCustomizableOnly,
 }: FiltersProps) {
-  const filteredSubcategories =
-    selectedCategory === "all"
-      ? subcategories
-      : subcategories.filter((item) => item.category_id === selectedCategory);
+  const [openCategoryId, setOpenCategoryId] = useState<string | null>(
+    selectedCategory !== "all" ? selectedCategory : null
+  );
 
   function clearFilters() {
     setSelectedCategory("all");
@@ -404,64 +403,104 @@ function FilterPanel({
       <div className="border-b border-[#eadccc] p-5">
         <p className="mb-4 font-semibold">Categories</p>
 
-        <div className="space-y-3">
-          <label className="flex cursor-pointer items-center gap-3 text-sm">
-            <input
-              type="radio"
-              checked={selectedCategory === "all"}
-              onChange={() => {
-                setSelectedCategory("all");
-                setSelectedSubcategory("all");
-              }}
-            />
+        <div className="space-y-1">
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedCategory("all");
+              setSelectedSubcategory("all");
+              setOpenCategoryId(null);
+            }}
+            className={`block w-full px-3 py-3 text-left text-sm ${
+              selectedCategory === "all"
+                ? "border-l-2 border-[#b08a5b] bg-[#f8f3ed] font-semibold"
+                : "hover:bg-[#f8f3ed]"
+            }`}
+          >
             All Categories
-          </label>
+          </button>
 
-          {categories.map((category) => (
-            <label
-              key={category.id}
-              className="flex cursor-pointer items-center gap-3 text-sm"
-            >
-              <input
-                type="radio"
-                checked={selectedCategory === category.id}
-                onChange={() => {
-                  setSelectedCategory(category.id);
-                  setSelectedSubcategory("all");
-                }}
-              />
-              {category.title}
-            </label>
-          ))}
-        </div>
-      </div>
+          {categories.map((category) => {
+            const categorySubcategories = subcategories.filter(
+              (item) => item.category_id === category.id
+            );
 
-      <div className="border-b border-[#eadccc] p-5">
-        <p className="mb-4 font-semibold">Subcategories</p>
+            const isOpen = openCategoryId === category.id;
+            const isSelected = selectedCategory === category.id;
 
-        <div className="max-h-[240px] space-y-3 overflow-y-auto pr-2">
-          <label className="flex cursor-pointer items-center gap-3 text-sm">
-            <input
-              type="radio"
-              checked={selectedSubcategory === "all"}
-              onChange={() => setSelectedSubcategory("all")}
-            />
-            All Subcategories
-          </label>
+            return (
+              <div key={category.id} className="border-b border-[#f0e5d8]">
+                <div className="flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCategory(category.id);
+                      setSelectedSubcategory("all");
+                      setOpenCategoryId(category.id);
+                    }}
+                    className={`block flex-1 px-3 py-3 text-left text-sm ${
+                      isSelected
+                        ? "border-l-2 border-[#b08a5b] bg-[#f8f3ed] font-semibold"
+                        : "hover:bg-[#f8f3ed]"
+                    }`}
+                  >
+                    {category.title}
+                  </button>
 
-          {filteredSubcategories.map((subcategory) => (
-            <label
-              key={subcategory.id}
-              className="flex cursor-pointer items-center gap-3 text-sm"
-            >
-              <input
-                type="radio"
-                checked={selectedSubcategory === subcategory.id}
-                onChange={() => setSelectedSubcategory(subcategory.id)}
-              />
-              {subcategory.title}
-            </label>
-          ))}
+                  {categorySubcategories.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setOpenCategoryId(isOpen ? null : category.id)
+                      }
+                      className="px-3 py-3 text-lg"
+                      aria-label="Toggle subcategories"
+                    >
+                      {isOpen ? "−" : "+"}
+                    </button>
+                  )}
+                </div>
+
+                {isOpen && categorySubcategories.length > 0 && (
+                  <div className="pb-3 pl-5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategory(category.id);
+                        setSelectedSubcategory("all");
+                      }}
+                      className={`block w-full px-4 py-3 text-left text-sm ${
+                        selectedCategory === category.id &&
+                        selectedSubcategory === "all"
+                          ? "font-semibold text-[#2b211d]"
+                          : "text-[#6f625b]"
+                      }`}
+                    >
+                      View all {category.title}
+                    </button>
+
+                    {categorySubcategories.map((subcategory, index) => (
+                      <button
+                        key={subcategory.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedCategory(category.id);
+                          setSelectedSubcategory(subcategory.id);
+                        }}
+                        className={`block w-full px-4 py-3 text-left text-sm ${
+                          selectedSubcategory === subcategory.id
+                            ? "font-semibold text-[#2b211d]"
+                            : "text-[#6f625b]"
+                        } ${index % 2 === 1 ? "bg-[#f1f1f1]" : "bg-white"}`}
+                      >
+                        {subcategory.title}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
