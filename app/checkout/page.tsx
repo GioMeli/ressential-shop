@@ -40,21 +40,44 @@ export default function CheckoutPage() {
 
     const { data: userData } = await supabase.auth.getUser();
 
-    const { error } = await supabase.from("orders").insert({
-        ...form,
-        user_id: userData.user?.id ?? null,
-        items: cart,
-        total,
-        status: "pending",
-    });
+    const orderPayload = {
+      ...form,
+      user_id: userData.user?.id ?? null,
+      items: cart,
+      total,
+      status: "pending",
+    };
 
-    setLoading(false);
+    const { error } = await supabase.from("orders").insert(orderPayload);
 
     if (error) {
+      setLoading(false);
       console.error(error);
       alert("Something went wrong. Please try again.");
       return;
     }
+
+    try {
+      await fetch("/api/send-order-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerName: form.customer_name,
+          customerEmail: form.customer_email,
+          total,
+          items: cart,
+          address: form.address,
+          city: form.city,
+          country: form.country,
+        }),
+      });
+    } catch (emailError) {
+      console.error("Order email failed:", emailError);
+    }
+
+    setLoading(false);
 
     clearCart();
     alert("Your order has been submitted successfully.");
