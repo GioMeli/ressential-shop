@@ -7,6 +7,7 @@ import { getFavorites } from "@/lib/favorites";
 import SmartSearch from "@/components/SmartSearch";
 import MegaCategoryMenu from "@/components/MegaCategoryMenu";
 import MobileCategoryAccordion from "@/components/MobileCategoryAccordion";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export default function CustomerMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -91,10 +92,10 @@ export default function CustomerMenu() {
         </div>
 
         <div className="border-b border-[#eadccc]">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6">
+          <div className="mx-auto grid max-w-7xl grid-cols-3 items-center px-4 py-4 md:flex md:justify-between md:gap-4 md:px-6">
             <button
               onClick={() => setMenuOpen(true)}
-              className="text-3xl md:hidden"
+              className="justify-self-start text-3xl md:hidden"
               aria-label="Open menu"
             >
               ☰
@@ -102,7 +103,7 @@ export default function CustomerMenu() {
 
             <a
               href="/"
-              className="flex items-center gap-3 text-2xl font-semibold tracking-wide md:text-4xl"
+              className="flex items-center justify-center gap-3 justify-self-center text-2xl font-semibold tracking-wide md:justify-start md:text-4xl"
             >
               <img
                 src="/images/logo.jpeg"
@@ -185,15 +186,6 @@ export default function CustomerMenu() {
               </div>
             </div>
             </div>
-
-            <a href="/cart" className="relative text-2xl md:hidden">
-              🛍
-              {cartCount > 0 && (
-                <span className="absolute -right-3 -top-2 rounded-full bg-[#d56c8c] px-2 py-0.5 text-xs font-semibold text-white">
-                  {cartCount}
-                </span>
-              )}
-            </a>
           </div>
         </div>
 
@@ -258,26 +250,9 @@ export default function CustomerMenu() {
             <MobileCategoryAccordion />
 
             <nav className="mt-8 flex flex-col gap-5 text-lg">
-              <a href="/shop">Shop</a>
-              <a href="/custom">Create Your Own</a>
-              <a href="/favorites">♡ Favorites ({favoritesCount})</a>
-              <a href="/cart">🛍 Basket ({cartCount})</a>
-              <a href="/contact">Contact</a>
-              <a href="/messages">Messages ({messageCount})</a>
-              <a href={email ? "/account" : "/login"}>My Orders</a>
-              <a href={email ? "/account" : "/login"}>
-                👤 {email ? "My Account" : "Login / Register"}
-              </a>
+                <a href="/custom">Create Your Own</a>
+                <a href="/contact">Contact</a>
             </nav>
-
-            {email && (
-              <button
-                onClick={logout}
-                className="mt-8 w-full rounded-full bg-[#2b211d] px-5 py-4 text-sm font-semibold uppercase tracking-widest text-white"
-              >
-                Logout
-              </button>
-            )}
 
             <a
             href="https://www.instagram.com/ressential_experience/"
@@ -291,6 +266,8 @@ export default function CustomerMenu() {
           </aside>
         </div>
       )}
+
+      <MobileBottomNav />
     </>
   );
 }

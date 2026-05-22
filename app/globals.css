@@ -42,3 +42,9 @@ body {
     transform: translateX(-50%);
   }
 }
+
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 64px;
+  }
+}
