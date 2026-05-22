@@ -42,7 +42,27 @@ type Product = {
   size: string | null;
 };
 
-const emptyForm = {
+type ProductForm = {
+  name: string;
+  category_id: string;
+  subcategory_id: string;
+  price: string;
+  size: string;
+  description: string;
+  short_description: string;
+  details: string;
+  ingredients: string;
+  how_to_use: string;
+  badge: string;
+  is_best_seller: boolean;
+  is_active: boolean;
+  is_customizable: boolean;
+  allow_custom_text: boolean;
+  allow_color_choice: boolean;
+  custom_note_label: string;
+};
+
+const emptyForm: ProductForm = {
   name: "",
   category_id: "",
   subcategory_id: "",
@@ -62,6 +82,28 @@ const emptyForm = {
   custom_note_label: "",
 };
 
+function formFromProduct(product: Product): ProductForm {
+  return {
+    name: product.name || "",
+    category_id: product.category_id || "",
+    subcategory_id: product.subcategory_id || "",
+    price: String(product.price || ""),
+    size: product.size || "",
+    description: product.description || "",
+    short_description: product.short_description || "",
+    details: product.details || "",
+    ingredients: product.ingredients || "",
+    how_to_use: product.how_to_use || "",
+    badge: product.badge || "",
+    is_best_seller: product.is_best_seller || false,
+    is_active: product.is_active ?? true,
+    is_customizable: product.is_customizable || false,
+    allow_custom_text: product.allow_custom_text || false,
+    allow_color_choice: product.allow_color_choice || false,
+    custom_note_label: product.custom_note_label || "",
+  };
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -69,16 +111,28 @@ export default function AdminProductsPage() {
 
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [savingEdit, setSavingEdit] = useState(false);
 
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState<ProductForm>(emptyForm);
+  const [editForm, setEditForm] = useState<ProductForm>(emptyForm);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
   const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   const [newCategory, setNewCategory] = useState("");
   const [newSubcategory, setNewSubcategory] = useState("");
 
   const filteredSubcategories = useMemo(() => {
-    return subcategories.filter((item) => item.category_id === form.category_id);
+    return subcategories.filter(
+      (item) => item.category_id === form.category_id,
+    );
   }, [subcategories, form.category_id]);
+
+  const filteredEditSubcategories = useMemo(() => {
+    return subcategories.filter(
+      (item) => item.category_id === editForm.category_id,
+    );
+  }, [subcategories, editForm.category_id]);
 
   useEffect(() => {
     checkAdmin();
@@ -137,7 +191,6 @@ export default function AdminProductsPage() {
 
   async function loadProducts() {
     const { data } = await supabase.from("products").select("*").order("name");
-
     if (data) setProducts(data);
   }
 
@@ -148,6 +201,41 @@ export default function AdminProductsPage() {
       .replace(/[^a-z0-9\s-]/g, "")
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-");
+  }
+
+  function buildProductPayload(currentForm: ProductForm) {
+    const selectedCategory = categories.find(
+      (category) => category.id === currentForm.category_id,
+    );
+
+    return {
+      slug: generateSlug(currentForm.name),
+      name: currentForm.name,
+      category_id: currentForm.category_id,
+      category: selectedCategory?.title || "",
+      subcategory_id: currentForm.subcategory_id || null,
+      price: Number(currentForm.price),
+      size: currentForm.size || null,
+      description: currentForm.description || null,
+      short_description: currentForm.short_description || null,
+      details: currentForm.details || null,
+      ingredients: currentForm.ingredients || null,
+      how_to_use: currentForm.how_to_use || null,
+      badge: currentForm.badge || null,
+      is_best_seller: currentForm.is_best_seller,
+      is_active: currentForm.is_active,
+      is_customizable: currentForm.is_customizable,
+      allow_custom_text: currentForm.is_customizable
+        ? currentForm.allow_custom_text
+        : false,
+      allow_color_choice: currentForm.is_customizable
+        ? currentForm.allow_color_choice
+        : false,
+      custom_note_label: currentForm.is_customizable
+        ? currentForm.custom_note_label ||
+          "Add your name, phrase or custom request"
+        : null,
+    };
   }
 
   async function createCategory() {
@@ -195,7 +283,6 @@ export default function AdminProductsPage() {
     if (imageFiles.length === 0) return [];
 
     setUploading(true);
-
     const uploadedUrls: string[] = [];
 
     for (const file of imageFiles) {
@@ -246,32 +333,10 @@ export default function AdminProductsPage() {
     const uploadedImages = await uploadImages();
     if (uploadedImages.length === 0) return;
 
-    const selectedCategory = categories.find((c) => c.id === form.category_id);
-
     const { error } = await supabase.from("products").insert({
-      slug: generateSlug(form.name),
-      name: form.name,
-      category_id: form.category_id,
-      category: selectedCategory?.title || "",
-      subcategory_id: form.subcategory_id || null,
-      price: Number(form.price),
-      size: form.size || null,
+      ...buildProductPayload(form),
       image: uploadedImages[0],
       images: uploadedImages,
-      description: form.description || null,
-      short_description: form.short_description || null,
-      details: form.details || null,
-      ingredients: form.ingredients || null,
-      how_to_use: form.how_to_use || null,
-      badge: form.badge || null,
-      is_best_seller: form.is_best_seller,
-      is_active: form.is_active,
-      is_customizable: form.is_customizable,
-      allow_custom_text: form.is_customizable ? form.allow_custom_text : false,
-      allow_color_choice: form.is_customizable ? form.allow_color_choice : false,
-      custom_note_label: form.is_customizable
-        ? form.custom_note_label || "Add your name, phrase or custom request"
-        : null,
     });
 
     if (error) {
@@ -281,12 +346,47 @@ export default function AdminProductsPage() {
 
     alert("Product added successfully.");
 
-    setForm({
-      ...emptyForm,
-      category_id: categories[0]?.id || "",
-    });
-
+    setForm({ ...emptyForm, category_id: categories[0]?.id || "" });
     setImageFiles([]);
+    await loadProducts();
+  }
+
+  function openEditModal(product: Product) {
+    setEditingProduct(product);
+    setEditForm(formFromProduct(product));
+  }
+
+  function closeEditModal() {
+    setEditingProduct(null);
+    setEditForm(emptyForm);
+  }
+
+  async function handleSaveEdit(event: FormEvent) {
+    event.preventDefault();
+
+    if (!editingProduct) return;
+
+    if (!editForm.category_id) {
+      alert("Please select a category.");
+      return;
+    }
+
+    setSavingEdit(true);
+
+    const { error } = await supabase
+      .from("products")
+      .update(buildProductPayload(editForm))
+      .eq("id", editingProduct.id);
+
+    setSavingEdit(false);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Product updated successfully.");
+    closeEditModal();
     await loadProducts();
   }
 
@@ -323,270 +423,22 @@ export default function AdminProductsPage() {
           >
             <h2 className="text-3xl font-semibold">Add New Product</h2>
 
-            <div className="mt-8 space-y-5">
-              <input
-                required
-                placeholder="Product Name"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-              />
-
-              <div className="rounded-2xl border border-[#eadccc] bg-[#faf7f3] p-4">
-                <label className="mb-2 block text-sm font-medium">
-                  Category
-                </label>
-
-                <select
-                  required
-                  value={form.category_id}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      category_id: e.target.value,
-                      subcategory_id: "",
-                    })
-                  }
-                  className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.title}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="mt-3 flex gap-2">
-                  <input
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                    placeholder="New category e.g. Easter Gifts"
-                    className="min-w-0 flex-1 rounded-2xl border border-[#ddd0c0] px-4 py-3 outline-none"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={createCategory}
-                    className="rounded-full bg-[#2b211d] px-4 py-3 text-xs font-semibold uppercase tracking-widest text-white"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-[#eadccc] bg-[#faf7f3] p-4">
-                <label className="mb-2 block text-sm font-medium">
-                  Subcategory Optional
-                </label>
-
-                <select
-                  value={form.subcategory_id}
-                  onChange={(e) =>
-                    setForm({ ...form, subcategory_id: e.target.value })
-                  }
-                  className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-                >
-                  <option value="">No Subcategory</option>
-                  {filteredSubcategories.map((subcategory) => (
-                    <option key={subcategory.id} value={subcategory.id}>
-                      {subcategory.title}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="mt-3 flex gap-2">
-                  <input
-                    value={newSubcategory}
-                    onChange={(e) => setNewSubcategory(e.target.value)}
-                    placeholder="New subcategory for selected category"
-                    className="min-w-0 flex-1 rounded-2xl border border-[#ddd0c0] px-4 py-3 outline-none"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={createSubcategory}
-                    className="rounded-full bg-[#2b211d] px-4 py-3 text-xs font-semibold uppercase tracking-widest text-white"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-
-              <input
-                required
-                type="number"
-                placeholder="Price €"
-                value={form.price}
-                onChange={(e) => setForm({ ...form, price: e.target.value })}
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-              />
-
-              <input
-                placeholder="Size / Capacity / Dimensions"
-                value={form.size}
-                onChange={(e) => setForm({ ...form, size: e.target.value })}
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-              />
-
-              <input
-                required
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) => {
-                  const files = Array.from(e.target.files || []);
-
-                  if (files.length > 3) {
-                    alert("You can upload up to 3 images only.");
-                    return;
-                  }
-
-                  setImageFiles(files);
-                }}
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4"
-              />
-
-              <textarea
-                rows={3}
-                placeholder="Short Description - shown near product title"
-                value={form.short_description}
-                onChange={(e) =>
-                  setForm({ ...form, short_description: e.target.value })
-                }
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-              />
-
-              <textarea
-                rows={4}
-                placeholder="Description"
-                value={form.description}
-                onChange={(e) =>
-                  setForm({ ...form, description: e.target.value })
-                }
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-              />
-
-              <textarea
-                rows={4}
-                placeholder="Details"
-                value={form.details}
-                onChange={(e) => setForm({ ...form, details: e.target.value })}
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-              />
-
-              <textarea
-                rows={4}
-                placeholder="Ingredients / Materials"
-                value={form.ingredients}
-                onChange={(e) =>
-                  setForm({ ...form, ingredients: e.target.value })
-                }
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-              />
-
-              <textarea
-                rows={4}
-                placeholder="How To Use / Care Instructions"
-                value={form.how_to_use}
-                onChange={(e) =>
-                  setForm({ ...form, how_to_use: e.target.value })
-                }
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-              />
-
-              <select
-                value={form.badge}
-                onChange={(e) => setForm({ ...form, badge: e.target.value })}
-                className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-              >
-                <option value="">No Badge</option>
-                <option value="New">New</option>
-                <option value="Best Seller">Best Seller</option>
-                <option value="Premium">Premium</option>
-                <option value="Customizable">Customizable</option>
-                <option value="Limited Edition">Limited Edition</option>
-              </select>
-
-              <label className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={form.is_best_seller}
-                  onChange={(e) =>
-                    setForm({ ...form, is_best_seller: e.target.checked })
-                  }
-                />
-                Mark as Best Seller
-              </label>
-
-              <label className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={form.is_active}
-                  onChange={(e) =>
-                    setForm({ ...form, is_active: e.target.checked })
-                  }
-                />
-                Visible in shop
-              </label>
-
-              <div className="rounded-2xl border border-[#eadccc] bg-[#faf7f3] p-4">
-                <label className="flex items-center gap-3 font-medium">
-                  <input
-                    type="checkbox"
-                    checked={form.is_customizable}
-                    onChange={(e) =>
-                      setForm({ ...form, is_customizable: e.target.checked })
-                    }
-                  />
-                  Product is Customizable
-                </label>
-
-                {form.is_customizable && (
-                  <div className="mt-4 space-y-3">
-                    <label className="flex items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={form.allow_custom_text}
-                        onChange={(e) =>
-                          setForm({
-                            ...form,
-                            allow_custom_text: e.target.checked,
-                          })
-                        }
-                      />
-                      Allow name / phrase
-                    </label>
-
-                    <label className="flex items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={form.allow_color_choice}
-                        onChange={(e) =>
-                          setForm({
-                            ...form,
-                            allow_color_choice: e.target.checked,
-                          })
-                        }
-                      />
-                      Allow color choice
-                    </label>
-
-                    <input
-                      placeholder="Custom note label"
-                      value={form.custom_note_label}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          custom_note_label: e.target.value,
-                        })
-                      }
-                      className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+            <ProductFormFields
+              form={form}
+              setForm={setForm}
+              categories={categories}
+              filteredSubcategories={filteredSubcategories}
+              newCategory={newCategory}
+              setNewCategory={setNewCategory}
+              createCategory={createCategory}
+              newSubcategory={newSubcategory}
+              setNewSubcategory={setNewSubcategory}
+              createSubcategory={createSubcategory}
+              showCategoryCreate
+              showImageUpload
+              imageFiles={imageFiles}
+              setImageFiles={setImageFiles}
+            />
 
             <button
               type="submit"
@@ -626,7 +478,7 @@ export default function AdminProductsPage() {
                         </h2>
 
                         <p className="mt-2 text-[#6f625b]">
-                          €{product.price}
+                          €{Number(product.price).toFixed(2)}
                         </p>
 
                         {product.size && (
@@ -639,14 +491,29 @@ export default function AdminProductsPage() {
                           /products/{product.slug}
                         </p>
 
-                        {product.is_customizable && (
-                          <p className="mt-3 inline-block rounded-full bg-[#ead8cf] px-4 py-2 text-xs font-semibold uppercase tracking-widest">
-                            Customizable
-                          </p>
-                        )}
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {product.is_customizable && (
+                            <p className="inline-block rounded-full bg-[#ead8cf] px-4 py-2 text-xs font-semibold uppercase tracking-widest">
+                              Customizable
+                            </p>
+                          )}
+
+                          {product.badge && (
+                            <p className="inline-block rounded-full border border-[#eadccc] px-4 py-2 text-xs font-semibold uppercase tracking-widest">
+                              {product.badge}
+                            </p>
+                          )}
+                        </div>
                       </div>
 
                       <div className="flex flex-col gap-3">
+                        <button
+                          onClick={() => openEditModal(product)}
+                          className="rounded-full bg-[#2b211d] px-5 py-3 text-xs font-semibold uppercase tracking-widest text-white"
+                        >
+                          Edit
+                        </button>
+
                         <button
                           onClick={() =>
                             updateProduct(product.id, {
@@ -694,6 +561,351 @@ export default function AdminProductsPage() {
           </div>
         </div>
       </section>
+
+      {editingProduct && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 px-4">
+          <form
+            onSubmit={handleSaveEdit}
+            className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl md:p-10"
+          >
+            <div className="mb-8 flex items-start justify-between gap-4 border-b border-[#eadccc] pb-6">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[#b08a5b]">
+                  Edit Product
+                </p>
+                <h2 className="mt-2 text-3xl font-semibold">
+                  {editingProduct.name}
+                </h2>
+                <p className="mt-2 text-sm text-[#6f625b]">
+                  Images are kept as they are for now. Image replace can be
+                  added later.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={closeEditModal}
+                className="text-3xl"
+                aria-label="Close edit modal"
+              >
+                ×
+              </button>
+            </div>
+
+            <ProductFormFields
+              form={editForm}
+              setForm={setEditForm}
+              categories={categories}
+              filteredSubcategories={filteredEditSubcategories}
+              showCategoryCreate={false}
+              showImageUpload={false}
+            />
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={closeEditModal}
+                className="rounded-full border border-[#d8c7b4] px-8 py-4 text-sm font-semibold uppercase tracking-widest"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                disabled={savingEdit}
+                className="rounded-full bg-[#2b211d] px-8 py-4 text-sm font-semibold uppercase tracking-widest text-white disabled:opacity-60"
+              >
+                {savingEdit ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </main>
+  );
+}
+
+type ProductFormFieldsProps = {
+  form: ProductForm;
+  setForm: (form: ProductForm) => void;
+  categories: Category[];
+  filteredSubcategories: Subcategory[];
+  showCategoryCreate?: boolean;
+  showImageUpload?: boolean;
+  imageFiles?: File[];
+  setImageFiles?: (files: File[]) => void;
+  newCategory?: string;
+  setNewCategory?: (value: string) => void;
+  createCategory?: () => void;
+  newSubcategory?: string;
+  setNewSubcategory?: (value: string) => void;
+  createSubcategory?: () => void;
+};
+
+function ProductFormFields({
+  form,
+  setForm,
+  categories,
+  filteredSubcategories,
+  showCategoryCreate = false,
+  showImageUpload = false,
+  setImageFiles,
+  newCategory = "",
+  setNewCategory,
+  createCategory,
+  newSubcategory = "",
+  setNewSubcategory,
+  createSubcategory,
+}: ProductFormFieldsProps) {
+  return (
+    <div className="mt-8 space-y-5">
+      <input
+        required
+        placeholder="Product Name"
+        value={form.name}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
+        className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+      />
+
+      <div className="rounded-2xl border border-[#eadccc] bg-[#faf7f3] p-4">
+        <label className="mb-2 block text-sm font-medium">Category</label>
+
+        <select
+          required
+          value={form.category_id}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              category_id: e.target.value,
+              subcategory_id: "",
+            })
+          }
+          className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+        >
+          <option value="">Select Category</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.title}
+            </option>
+          ))}
+        </select>
+
+        {showCategoryCreate && (
+          <div className="mt-3 flex gap-2">
+            <input
+              value={newCategory}
+              onChange={(e) => setNewCategory?.(e.target.value)}
+              placeholder="New category e.g. Easter Gifts"
+              className="min-w-0 flex-1 rounded-2xl border border-[#ddd0c0] px-4 py-3 outline-none"
+            />
+
+            <button
+              type="button"
+              onClick={createCategory}
+              className="rounded-full bg-[#2b211d] px-4 py-3 text-xs font-semibold uppercase tracking-widest text-white"
+            >
+              Add
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-2xl border border-[#eadccc] bg-[#faf7f3] p-4">
+        <label className="mb-2 block text-sm font-medium">
+          Subcategory Optional
+        </label>
+
+        <select
+          value={form.subcategory_id}
+          onChange={(e) => setForm({ ...form, subcategory_id: e.target.value })}
+          className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+        >
+          <option value="">No Subcategory</option>
+          {filteredSubcategories.map((subcategory) => (
+            <option key={subcategory.id} value={subcategory.id}>
+              {subcategory.title}
+            </option>
+          ))}
+        </select>
+
+        {showCategoryCreate && (
+          <div className="mt-3 flex gap-2">
+            <input
+              value={newSubcategory}
+              onChange={(e) => setNewSubcategory?.(e.target.value)}
+              placeholder="New subcategory for selected category"
+              className="min-w-0 flex-1 rounded-2xl border border-[#ddd0c0] px-4 py-3 outline-none"
+            />
+
+            <button
+              type="button"
+              onClick={createSubcategory}
+              className="rounded-full bg-[#2b211d] px-4 py-3 text-xs font-semibold uppercase tracking-widest text-white"
+            >
+              Add
+            </button>
+          </div>
+        )}
+      </div>
+
+      <input
+        required
+        type="number"
+        placeholder="Price €"
+        value={form.price}
+        onChange={(e) => setForm({ ...form, price: e.target.value })}
+        className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+      />
+
+      <input
+        placeholder="Size / Capacity / Dimensions"
+        value={form.size}
+        onChange={(e) => setForm({ ...form, size: e.target.value })}
+        className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+      />
+
+      {showImageUpload && (
+        <input
+          required
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => {
+            const files = Array.from(e.target.files || []);
+
+            if (files.length > 3) {
+              alert("You can upload up to 3 images only.");
+              return;
+            }
+
+            setImageFiles?.(files);
+          }}
+          className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4"
+        />
+      )}
+
+      <textarea
+        rows={3}
+        placeholder="Short Description - shown near product title"
+        value={form.short_description}
+        onChange={(e) =>
+          setForm({ ...form, short_description: e.target.value })
+        }
+        className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+      />
+
+      <textarea
+        rows={4}
+        placeholder="Description"
+        value={form.description}
+        onChange={(e) => setForm({ ...form, description: e.target.value })}
+        className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+      />
+
+      <textarea
+        rows={4}
+        placeholder="Details"
+        value={form.details}
+        onChange={(e) => setForm({ ...form, details: e.target.value })}
+        className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+      />
+
+      <textarea
+        rows={4}
+        placeholder="Ingredients / Materials"
+        value={form.ingredients}
+        onChange={(e) => setForm({ ...form, ingredients: e.target.value })}
+        className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+      />
+
+      <textarea
+        rows={4}
+        placeholder="How To Use / Care Instructions"
+        value={form.how_to_use}
+        onChange={(e) => setForm({ ...form, how_to_use: e.target.value })}
+        className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+      />
+
+      <select
+        value={form.badge}
+        onChange={(e) => setForm({ ...form, badge: e.target.value })}
+        className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+      >
+        <option value="">No Badge</option>
+        <option value="New">New</option>
+        <option value="Best Seller">Best Seller</option>
+        <option value="Premium">Premium</option>
+        <option value="Customizable">Customizable</option>
+        <option value="Limited Edition">Limited Edition</option>
+      </select>
+
+      <label className="flex items-center gap-3">
+        <input
+          type="checkbox"
+          checked={form.is_best_seller}
+          onChange={(e) =>
+            setForm({ ...form, is_best_seller: e.target.checked })
+          }
+        />
+        Mark as Best Seller
+      </label>
+
+      <label className="flex items-center gap-3">
+        <input
+          type="checkbox"
+          checked={form.is_active}
+          onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
+        />
+        Visible in shop
+      </label>
+
+      <div className="rounded-2xl border border-[#eadccc] bg-[#faf7f3] p-4">
+        <label className="flex items-center gap-3 font-medium">
+          <input
+            type="checkbox"
+            checked={form.is_customizable}
+            onChange={(e) =>
+              setForm({ ...form, is_customizable: e.target.checked })
+            }
+          />
+          Product is Customizable
+        </label>
+
+        {form.is_customizable && (
+          <div className="mt-4 space-y-3">
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={form.allow_custom_text}
+                onChange={(e) =>
+                  setForm({ ...form, allow_custom_text: e.target.checked })
+                }
+              />
+              Allow name / phrase
+            </label>
+
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={form.allow_color_choice}
+                onChange={(e) =>
+                  setForm({ ...form, allow_color_choice: e.target.checked })
+                }
+              />
+              Allow color choice
+            </label>
+
+            <input
+              placeholder="Custom note label"
+              value={form.custom_note_label}
+              onChange={(e) =>
+                setForm({ ...form, custom_note_label: e.target.value })
+              }
+              className="w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+            />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
