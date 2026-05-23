@@ -91,7 +91,7 @@ export default function CheckoutPage() {
     window.dispatchEvent(new Event("cart-updated"));
 
     alert("Your order request has been submitted successfully.");
-    window.location.href = "/shop";
+    window.location.href = "/order-success";
   }
 
   return (
