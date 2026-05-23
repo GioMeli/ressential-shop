@@ -122,7 +122,7 @@ export default function AdminOrdersPage() {
     }
 
     try {
-      await fetch("/api/send-status-email", {
+      const response = await fetch("/api/send-status-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -134,8 +134,18 @@ export default function AdminOrdersPage() {
           status,
         }),
       });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("Status email API error:", result);
+        alert("Status changed, but email was not sent. Check console.");
+      } else {
+        console.log("Status email sent:", result);
+      }
     } catch (emailError) {
       console.error("Status email failed:", emailError);
+      alert("Status changed, but email request failed.");
     }
 
     setUpdatingId(null);
