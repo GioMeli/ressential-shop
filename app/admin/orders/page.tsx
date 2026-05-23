@@ -121,6 +121,23 @@ export default function AdminOrdersPage() {
       });
     }
 
+    try {
+      await fetch("/api/send-status-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerEmail: order.customer_email,
+          customerName: order.customer_name,
+          orderId: order.id,
+          status,
+        }),
+      });
+    } catch (emailError) {
+      console.error("Status email failed:", emailError);
+    }
+
     setUpdatingId(null);
     await loadOrders();
   }
