@@ -11,91 +11,168 @@ export default function CartPage() {
     setCart(getCart());
   }, []);
 
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+  const subtotal = cart.reduce(
+    (sum, item) => sum + Number(item.price) * item.quantity,
     0
   );
+
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   function handleRemove(id: string) {
     removeFromCart(id);
     setCart(getCart());
+    window.dispatchEvent(new Event("cart-updated"));
   }
 
   return (
-    <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
+    <main className="min-h-screen bg-[#f4f0eb] text-[#2b211d]">
       <CustomerNavbar />
 
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <h1 className="text-5xl font-semibold md:text-7xl">Your Basket</h1>
+      <section className="mx-auto max-w-[1600px] px-4 py-8 md:px-8 md:py-12">
+        <div className="mb-8 text-center text-sm text-[#6f625b]">
+          Cart <span className="mx-2">›</span>
+          <strong className="text-[#2b211d]">Place Order</strong>
+          <span className="mx-2">›</span>
+          Payment <span className="mx-2">›</span>
+          Complete
+        </div>
+
+        <div className="mb-5 border border-[#b7d7c0] bg-[#f1fbf4] px-5 py-4 text-sm font-semibold text-[#166534]">
+          ✓ Secure handmade checkout • Order request before payment
+        </div>
 
         {cart.length === 0 ? (
-          <div className="mt-12 rounded-[2rem] bg-white p-10 text-center">
-            <h2 className="text-3xl font-semibold">Your basket is empty</h2>
-            <a href="/shop" className="mt-6 inline-block underline">
-              Go to shop
+          <div className="mx-auto max-w-2xl bg-white p-10 text-center">
+            <h1 className="text-4xl font-semibold">Your basket is empty</h1>
+            <p className="mt-4 text-[#6f625b]">
+              Explore handmade gifts, candles and custom creations.
+            </p>
+            <a
+              href="/shop"
+              className="mt-8 inline-block rounded-full bg-[#2b211d] px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white"
+            >
+              Start Shopping
             </a>
           </div>
         ) : (
-          <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_380px]">
-            <div className="space-y-6">
-              {cart.map((item) => (
-                <div
-                  key={`${item.id}-${item.color || "default"}`}
-                  className="flex gap-5 rounded-[2rem] bg-white p-5 shadow-sm"
-                >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="h-32 w-32 rounded-[1.5rem] object-cover"
-                  />
+          <div className="grid gap-8 lg:grid-cols-[1fr_420px]">
+            <div>
+              <div className="bg-white px-5 py-5">
+                <h1 className="text-2xl font-bold md:text-3xl">
+                  All Items ({totalItems})
+                </h1>
+              </div>
 
-                  <div className="flex flex-1 flex-col justify-between">
-                    <div>
-                      <h2 className="text-2xl font-semibold">{item.name}</h2>
-                      <p className="mt-2 text-[#6f625b]">
-                        Quantity: {item.quantity}
-                      </p>
-                      {item.size && (
-                        <p className="text-[#6f625b]">Size: {item.size}</p>
-                      )}
-                      {item.color && (
-                        <p className="text-[#6f625b]">Color: {item.color}</p>
-                      )}
+              <div className="mt-4 space-y-4">
+                {cart.map((item) => (
+                  <div
+                    key={`${item.id}-${item.color || ""}-${item.templateDescription || ""}`}
+                    className="bg-white p-4 md:p-5"
+                  >
+                    <div className="grid grid-cols-[110px_1fr] gap-4 md:grid-cols-[140px_1fr_130px] md:items-center">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="h-32 w-full bg-[#fbf7f1] object-contain p-2 md:h-36"
+                      />
+
+                      <div>
+                        <h2 className="text-base font-semibold md:text-xl">
+                          {item.name}
+                        </h2>
+
+                        <div className="mt-3 space-y-1 text-sm text-[#6f625b]">
+                          <p>Quantity: {item.quantity}</p>
+
+                          {item.size && <p>Size: {item.size}</p>}
+
+                          {item.color && <p>Color: {item.color}</p>}
+
+                          {item.templateDescription && (
+                            <p className="mt-2 rounded-xl bg-[#f8f3ed] p-3">
+                              Custom Details: {item.templateDescription}
+                            </p>
+                          )}
+                        </div>
+
+                        <button
+                          onClick={() => handleRemove(item.id)}
+                          className="mt-4 text-xs font-semibold uppercase tracking-widest text-red-700"
+                        >
+                          Remove
+                        </button>
+                      </div>
+
+                      <div className="col-span-2 text-right md:col-span-1">
+                        <p className="text-lg font-bold">
+                          €{(Number(item.price) * item.quantity).toFixed(2)}
+                        </p>
+                        <p className="mt-1 text-xs text-[#8a7b72]">
+                          €{Number(item.price).toFixed(2)} each
+                        </p>
+                      </div>
                     </div>
-
-                    <button
-                      onClick={() => handleRemove(item.id)}
-                      className="text-left text-sm font-semibold uppercase tracking-widest text-red-700"
-                    >
-                      Remove
-                    </button>
                   </div>
+                ))}
+              </div>
 
-                  <p className="text-xl font-bold">
-                    €{item.price * item.quantity}
-                  </p>
-                </div>
-              ))}
+              <div className="mt-5 bg-white p-5">
+                <p className="font-semibold">Standard Delivery</p>
+                <p className="mt-2 text-sm text-[#6f625b]">
+                  Delivery cost and courier options will be confirmed before final payment.
+                </p>
+              </div>
             </div>
 
-            <aside className="h-fit rounded-[2rem] bg-white p-8 shadow-sm">
-              <h2 className="text-3xl font-semibold">Order Summary</h2>
+            <aside className="h-fit bg-white p-6 shadow-sm lg:sticky lg:top-32">
+              <h2 className="text-2xl font-bold">Order Summary</h2>
 
-              <div className="mt-6 flex justify-between text-lg">
-                <span>Total</span>
-                <strong>€{total}</strong>
+              <div className="mt-6 space-y-4 text-sm">
+                <div className="flex justify-between">
+                  <span>Subtotal ({totalItems} items)</span>
+                  <strong>€{subtotal.toFixed(2)}</strong>
+                </div>
+
+                <div className="flex justify-between text-[#6f625b]">
+                  <span>Shipping</span>
+                  <span>Calculated later</span>
+                </div>
+
+                <div className="border-t border-[#eadccc] pt-4">
+                  <div className="flex justify-between text-xl">
+                    <span className="font-bold">Estimated Total</span>
+                    <strong>€{subtotal.toFixed(2)}</strong>
+                  </div>
+                </div>
               </div>
 
               <a
                 href="/checkout"
-                className="mt-8 block rounded-full bg-[#2b211d] px-6 py-4 text-center text-sm font-semibold uppercase tracking-widest text-white"
+                className="mt-8 block bg-[#2b211d] px-6 py-4 text-center text-sm font-semibold uppercase tracking-widest text-white"
               >
-                Proceed to Checkout
+                Checkout Now ({totalItems})
               </a>
+
+              <div className="mt-6 space-y-4 border-t border-[#eadccc] pt-6 text-sm text-[#6f625b]">
+                <p>✓ Secure order request</p>
+                <p>✓ Handmade products prepared with care</p>
+                <p>✓ Customer support through messages</p>
+              </div>
             </aside>
           </div>
         )}
       </section>
+
+      {cart.length > 0 && (
+        <div className="fixed bottom-16 left-0 right-0 z-[800] border-t border-[#eadccc] bg-white p-3 md:hidden">
+          <a
+            href="/checkout"
+            className="block bg-[#2b211d] px-5 py-4 text-center text-sm font-semibold uppercase tracking-widest text-white"
+          >
+            Checkout ({totalItems}) • €{subtotal.toFixed(2)}
+          </a>
+        </div>
+      )}
     </main>
   );
 }
