@@ -23,7 +23,9 @@ type Order = {
   country: string;
   city: string;
   address: string;
-  notes: string;
+  notes: string | null;
+  admin_notes: string | null;
+  tracking_note: string | null;
   status: string;
   total: number;
   created_at: string;
@@ -32,8 +34,12 @@ type Order = {
 
 const statuses = ["all", "pending", "processing", "completed", "cancelled"];
 
-function statusMessage(status: string, orderId: string) {
+function statusMessage(status: string, orderId: string, customMessage?: string) {
   const shortId = orderId.slice(0, 8).toUpperCase();
+
+  if (customMessage && customMessage.trim()) {
+    return customMessage.trim();
+  }
 
   if (status === "processing") {
     return `Your order #${shortId} is now being processed. Ressential is preparing your handmade items.`;
@@ -50,12 +56,24 @@ function statusMessage(status: string, orderId: string) {
   return `Your order #${shortId} status has been updated to ${status}.`;
 }
 
+function statusClass(status: string) {
+  if (status === "completed") return "bg-green-100 text-green-800";
+  if (status === "processing") return "bg-yellow-100 text-yellow-800";
+  if (status === "cancelled") return "bg-red-100 text-red-800";
+  return "bg-[#f3ebe3] text-[#2b211d]";
+}
+
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [openOrderId, setOpenOrderId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [savingNotesId, setSavingNotesId] = useState<string | null>(null);
+
+  const [adminNotes, setAdminNotes] = useState<Record<string, string>>({});
+  const [trackingNotes, setTrackingNotes] = useState<Record<string, string>>({});
+  const [customerMessages, setCustomerMessages] = useState<Record<string, string>>({});
 
   useEffect(() => {
     checkAdminAndLoadOrders();
@@ -91,9 +109,45 @@ export default function AdminOrdersPage() {
 
     if (!error && data) {
       setOrders(data);
+
+      const notesMap: Record<string, string> = {};
+      const trackingMap: Record<string, string> = {};
+      const messageMap: Record<string, string> = {};
+
+      data.forEach((order: Order) => {
+        notesMap[order.id] = order.admin_notes || "";
+        trackingMap[order.id] = order.tracking_note || "";
+        messageMap[order.id] = "";
+      });
+
+      setAdminNotes(notesMap);
+      setTrackingNotes(trackingMap);
+      setCustomerMessages(messageMap);
     }
 
     setLoading(false);
+  }
+
+  async function saveOrderNotes(orderId: string) {
+    setSavingNotesId(orderId);
+
+    const { error } = await supabase
+      .from("orders")
+      .update({
+        admin_notes: adminNotes[orderId] || null,
+        tracking_note: trackingNotes[orderId] || null,
+      })
+      .eq("id", orderId);
+
+    setSavingNotesId(null);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Order notes saved.");
+    await loadOrders();
   }
 
   async function updateStatus(order: Order, status: string) {
@@ -101,7 +155,11 @@ export default function AdminOrdersPage() {
 
     const { error } = await supabase
       .from("orders")
-      .update({ status })
+      .update({
+        status,
+        admin_notes: adminNotes[order.id] || order.admin_notes || null,
+        tracking_note: trackingNotes[order.id] || order.tracking_note || null,
+      })
       .eq("id", order.id);
 
     if (error) {
@@ -110,13 +168,15 @@ export default function AdminOrdersPage() {
       return;
     }
 
+    const messageText = statusMessage(status, order.id, customerMessages[order.id]);
+
     if (order.user_id) {
       await supabase.from("messages").insert({
         user_id: order.user_id,
         user_email: order.customer_email,
         sender: "admin",
         subject: `Order #${order.id.slice(0, 8).toUpperCase()} status update`,
-        message: statusMessage(status, order.id),
+        message: messageText,
         is_read: false,
       });
     }
@@ -132,6 +192,7 @@ export default function AdminOrdersPage() {
           customerName: order.customer_name,
           orderId: order.id,
           status,
+          customMessage: customerMessages[order.id] || "",
         }),
       });
 
@@ -153,9 +214,7 @@ export default function AdminOrdersPage() {
   }
 
   const filteredOrders =
-    filter === "all"
-      ? orders
-      : orders.filter((order) => order.status === filter);
+    filter === "all" ? orders : orders.filter((order) => order.status === filter);
 
   return (
     <main className="min-h-screen bg-[#f8f3ed] text-[#2b211d]">
@@ -166,9 +225,12 @@ export default function AdminOrdersPage() {
           Admin Dashboard
         </p>
 
-        <h1 className="text-4xl font-semibold md:text-6xl">
-          Customer Orders
-        </h1>
+        <h1 className="text-4xl font-semibold md:text-6xl">Customer Orders</h1>
+
+        <p className="mt-4 max-w-3xl text-[#6f625b]">
+          Manage customer orders, review custom product details, update status,
+          save internal notes and notify customers.
+        </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
           {statuses.map((value) => (
@@ -201,16 +263,17 @@ export default function AdminOrdersPage() {
         <div className="mt-10 space-y-6">
           {filteredOrders.map((order) => {
             const isOpen = openOrderId === order.id;
+            const shortId = order.id.slice(0, 8).toUpperCase();
 
             return (
               <div
                 key={order.id}
                 className="overflow-hidden rounded-[2rem] border border-[#e4d2bd] bg-white shadow-sm"
               >
-                <div className="grid gap-6 p-6 md:grid-cols-[1fr_1fr_260px] md:items-center">
+                <div className="grid gap-6 p-6 md:grid-cols-[1fr_1fr_280px] md:items-center">
                   <div>
                     <p className="text-xs uppercase tracking-[0.25em] text-[#b08a5b]">
-                      Order #{order.id.slice(0, 8).toUpperCase()}
+                      Order #{shortId}
                     </p>
 
                     <h2 className="mt-2 text-2xl font-semibold">
@@ -223,7 +286,7 @@ export default function AdminOrdersPage() {
                   </div>
 
                   <div>
-                    <p className="text-sm text-[#6f625b]">
+                    <p className="break-all text-sm text-[#6f625b]">
                       {order.customer_email}
                     </p>
 
@@ -231,9 +294,19 @@ export default function AdminOrdersPage() {
                       {order.customer_phone}
                     </p>
 
-                    <p className="mt-3 text-xl font-semibold">
-                      €{Number(order.total).toFixed(2)}
-                    </p>
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      <p className="text-xl font-semibold">
+                        €{Number(order.total).toFixed(2)}
+                      </p>
+
+                      <span
+                        className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-widest ${statusClass(
+                          order.status
+                        )}`}
+                      >
+                        {order.status}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-3">
@@ -287,16 +360,14 @@ export default function AdminOrdersPage() {
                           </p>
                           {order.notes && (
                             <p>
-                              <strong>Notes:</strong> {order.notes}
+                              <strong>Customer Notes:</strong> {order.notes}
                             </p>
                           )}
                         </div>
                       </div>
 
                       <div className="rounded-[1.5rem] bg-white p-6">
-                        <h3 className="text-xl font-semibold">
-                          Ordered Products
-                        </h3>
+                        <h3 className="text-xl font-semibold">Ordered Products</h3>
 
                         <div className="mt-5 space-y-4">
                           {order.items?.map((item, index) => (
@@ -309,7 +380,7 @@ export default function AdminOrdersPage() {
                                   <img
                                     src={item.image}
                                     alt={item.name}
-                                    className="h-20 w-20 rounded-xl object-cover"
+                                    className="h-20 w-20 rounded-xl object-contain"
                                   />
                                 )}
 
@@ -335,7 +406,7 @@ export default function AdminOrdersPage() {
 
                                   {item.templateDescription && (
                                     <p className="mt-2 whitespace-pre-line rounded-xl bg-[#f8f3ed] p-3 text-sm text-[#6f625b]">
-                                      Custom Details:{" "}
+                                      <strong>Custom Details:</strong>{" "}
                                       {item.templateDescription}
                                     </p>
                                   )}
@@ -345,6 +416,89 @@ export default function AdminOrdersPage() {
                           ))}
                         </div>
                       </div>
+                    </div>
+
+                    <div className="mt-6 grid gap-6 lg:grid-cols-3">
+                      <div className="rounded-[1.5rem] bg-white p-6">
+                        <h3 className="text-xl font-semibold">Admin Notes</h3>
+                        <p className="mt-2 text-sm text-[#6f625b]">
+                          Internal notes only. Customers cannot see this.
+                        </p>
+
+                        <textarea
+                          rows={6}
+                          value={adminNotes[order.id] || ""}
+                          onChange={(e) =>
+                            setAdminNotes({
+                              ...adminNotes,
+                              [order.id]: e.target.value,
+                            })
+                          }
+                          placeholder="Example: Customer requested gold ribbon. Confirm courier price before payment."
+                          className="mt-4 w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+                        />
+                      </div>
+
+                      <div className="rounded-[1.5rem] bg-white p-6">
+                        <h3 className="text-xl font-semibold">
+                          Tracking / Delivery Note
+                        </h3>
+                        <p className="mt-2 text-sm text-[#6f625b]">
+                          Placeholder for courier, tracking number or delivery remarks.
+                        </p>
+
+                        <textarea
+                          rows={6}
+                          value={trackingNotes[order.id] || ""}
+                          onChange={(e) =>
+                            setTrackingNotes({
+                              ...trackingNotes,
+                              [order.id]: e.target.value,
+                            })
+                          }
+                          placeholder="Example: ACS tracking CY123456789. Delivery expected Friday."
+                          className="mt-4 w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+                        />
+                      </div>
+
+                      <div className="rounded-[1.5rem] bg-white p-6">
+                        <h3 className="text-xl font-semibold">
+                          Customer Status Message
+                        </h3>
+                        <p className="mt-2 text-sm text-[#6f625b]">
+                          Optional. This will be sent with the next status update.
+                        </p>
+
+                        <textarea
+                          rows={6}
+                          value={customerMessages[order.id] || ""}
+                          onChange={(e) =>
+                            setCustomerMessages({
+                              ...customerMessages,
+                              [order.id]: e.target.value,
+                            })
+                          }
+                          placeholder="Example: Your handmade piece is being prepared and we will contact you soon for payment details."
+                          className="mt-4 w-full rounded-2xl border border-[#ddd0c0] px-5 py-4 outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-6 flex flex-col gap-3 md:flex-row md:justify-end">
+                      <button
+                        onClick={() => saveOrderNotes(order.id)}
+                        disabled={savingNotesId === order.id}
+                        className="rounded-full border border-[#b08a5b] px-6 py-4 text-xs font-semibold uppercase tracking-widest"
+                      >
+                        {savingNotesId === order.id ? "Saving..." : "Save Notes"}
+                      </button>
+
+                      <a
+                        href={`mailto:${order.customer_email}`}
+                        className="rounded-full bg-[#2b211d] px-6 py-4 text-center text-xs font-semibold uppercase tracking-widest text-white"
+                      >
+                        Email Customer
+                      </a>
                     </div>
                   </div>
                 )}
