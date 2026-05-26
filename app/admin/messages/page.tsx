@@ -42,7 +42,6 @@ export default function AdminMessagesPage() {
   const [allMessages, setAllMessages] = useState<Message[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
-
   const [selectedConversation, setSelectedConversation] =
     useState<Conversation | null>(null);
 
@@ -59,7 +58,7 @@ export default function AdminMessagesPage() {
   }, []);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, selectedConversation]);
 
   async function checkAdminAndLoad() {
@@ -281,33 +280,33 @@ export default function AdminMessagesPage() {
     : "";
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f4f0eb] text-[#2b211d]">
+    <main className="h-screen overflow-hidden bg-[#f4f0eb] text-[#2b211d]">
       <AdminNavbar />
 
-      <section className="mx-auto w-full max-w-[1700px] px-3 py-4 md:px-6 md:py-6">
-        <div className="mb-4 hidden md:block md:pt-2">
+      <section className="flex h-[calc(100vh-205px)] flex-col px-3 py-3 md:px-4 md:py-3">
+        <div className="mb-3 hidden shrink-0 md:block">
           <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
             Admin Dashboard
           </p>
 
-          <h1 className="mt-2 text-3xl font-semibold xl:text-4xl">
+          <h1 className="mt-1 text-2xl font-semibold xl:text-3xl">
             Customer Conversations
           </h1>
         </div>
 
-        <div className="grid h-[calc(100dvh-110px)] overflow-hidden rounded-[1.7rem] border border-[#eadccc] bg-white shadow-sm md:h-[calc(100dvh-180px)] md:min-h-[680px] md:grid-cols-[390px_minmax(0,1fr)]">
+        <div className="grid min-h-0 flex-1 overflow-hidden rounded-[1.4rem] border border-[#eadccc] bg-white shadow-sm md:grid-cols-[340px_minmax(0,1fr)]">
           <aside
-            className={`min-w-0 border-r border-[#eadccc] bg-[#fbf7f1] ${
-              selectedConversation ? "hidden md:block" : "block"
-            }`}
+            className={`min-h-0 min-w-0 border-r border-[#eadccc] bg-[#fbf7f1] ${
+              selectedConversation ? "hidden md:flex" : "flex"
+            } flex-col`}
           >
-            <div className="border-b border-[#eadccc] p-4">
+            <div className="shrink-0 border-b border-[#eadccc] p-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[11px] uppercase tracking-[0.25em] text-[#b08a5b]">
                     Support Inbox
                   </p>
-                  <h2 className="mt-1 text-2xl font-semibold">
+                  <h2 className="mt-1 text-xl font-semibold">
                     Conversations
                   </h2>
                 </div>
@@ -321,7 +320,7 @@ export default function AdminMessagesPage() {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="Search customer or subject..."
-                className="mt-4 w-full rounded-2xl border border-[#ddd0c0] bg-white px-4 py-3 text-sm outline-none"
+                className="mt-3 w-full rounded-2xl border border-[#ddd0c0] bg-white px-4 py-2.5 text-sm outline-none"
               />
 
               <div className="mt-4 grid grid-cols-4 gap-2">
@@ -341,7 +340,7 @@ export default function AdminMessagesPage() {
               </div>
             </div>
 
-            <div className="h-[calc(100dvh-310px)] overflow-y-auto overscroll-contain p-3 md:h-[calc(100%-154px)]">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3">
               {loading && (
                 <div className="rounded-2xl bg-white p-6 text-center">
                   Loading conversations...
@@ -368,14 +367,14 @@ export default function AdminMessagesPage() {
                     <button
                       key={conversation.id}
                       onClick={() => selectConversation(conversation)}
-                      className={`mb-3 w-full rounded-[1.3rem] border p-4 text-left transition ${
+                      className={`mb-2 w-full rounded-[1.2rem] border p-3 text-left transition ${
                         isSelected
                           ? "border-[#2b211d] bg-white"
                           : "border-[#eadccc] bg-white/80 hover:bg-white"
                       }`}
                     >
                       <div className="flex items-start gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#2b211d] text-sm font-bold text-white">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#2b211d] text-xs font-bold text-white">
                           {customerName.charAt(0).toUpperCase()}
                         </div>
 
@@ -430,13 +429,13 @@ export default function AdminMessagesPage() {
           </aside>
 
           <section
-            className={`min-w-0 ${
+            className={`min-h-0 min-w-0 ${
               selectedConversation ? "flex" : "hidden md:flex"
-            } h-full flex-col`}
+            } flex-col`}
           >
             {selectedConversation ? (
               <>
-                <div className="flex min-h-[76px] items-center justify-between border-b border-[#eadccc] bg-[#fbf7f1] px-4 py-3 md:px-6">
+                <div className="flex min-h-[62px] shrink-0 items-center justify-between border-b border-[#eadccc] bg-[#fbf7f1] px-4 py-2 md:px-5">
                   <div className="flex min-w-0 items-center gap-3">
                     <button
                       onClick={() => setSelectedConversation(null)}
@@ -479,7 +478,7 @@ export default function AdminMessagesPage() {
                   )}
                 </div>
 
-                <div className="flex-1 overflow-y-auto bg-[#efe7df] px-3 py-5 md:px-6">
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-[#efe7df] px-3 py-5 md:px-6">
                   {messages.length === 0 && (
                     <div className="mx-auto mt-10 max-w-md rounded-[2rem] bg-white p-7 text-center shadow-sm">
                       <h3 className="text-2xl font-semibold">
@@ -503,7 +502,7 @@ export default function AdminMessagesPage() {
                           }`}
                         >
                           <div
-                            className={`max-w-[86%] rounded-[1.35rem] px-4 py-3 shadow-sm md:max-w-[70%] md:px-5 md:py-4 ${
+                            className={`max-w-[86%] rounded-[1.2rem] px-4 py-3 shadow-sm md:max-w-[64%] md:px-4 md:py-3 ${
                               isAdmin
                                 ? "rounded-br-sm bg-[#2b211d] text-white"
                                 : "rounded-bl-sm bg-white text-[#2b211d]"
@@ -533,7 +532,7 @@ export default function AdminMessagesPage() {
                 </div>
 
                 {selectedConversation.status === "closed" ? (
-                  <div className="border-t border-[#eadccc] bg-white p-4 text-center">
+                  <div className="shrink-0 border-t border-[#eadccc] bg-white p-4 text-center">
                     <p className="text-sm text-[#6f625b]">
                       This conversation is closed. Reopen it to reply.
                     </p>
@@ -541,7 +540,7 @@ export default function AdminMessagesPage() {
                 ) : (
                   <form
                     onSubmit={handleReply}
-                    className="flex items-end gap-3 border-t border-[#eadccc] bg-white p-3 md:p-4"
+                    className="flex shrink-0 items-end gap-3 border-t border-[#eadccc] bg-white p-2.5 md:p-3"
                   >
                     <textarea
                       required
@@ -549,7 +548,7 @@ export default function AdminMessagesPage() {
                       value={replyMessage}
                       onChange={(e) => setReplyMessage(e.target.value)}
                       placeholder="Write a reply..."
-                      className="max-h-32 flex-1 resize-none rounded-[1.5rem] border border-[#ddd0c0] bg-[#fbf7f1] px-5 py-4 text-sm outline-none"
+                      className="max-h-28 flex-1 resize-none rounded-[1.3rem] border border-[#ddd0c0] bg-[#fbf7f1] px-5 py-3 text-sm outline-none"
                     />
 
                     <button
