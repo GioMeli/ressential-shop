@@ -11,6 +11,7 @@ import MobileBottomNav from "@/components/MobileBottomNav";
 import LanguageSelector from "@/components/LanguageSelector";
 import { useLanguage } from "@/hooks/useLanguage";
 import { t } from "@/lib/translations";
+import T from "@/components/T";
 
 export default function CustomerMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -95,7 +96,7 @@ export default function CustomerMenu() {
     <>
       <header className="sticky top-0 z-50 bg-[#fbf7f1] text-[#2b211d] shadow-sm">
         <div className="bg-[#ead8cf] px-4 py-2 text-center text-xs tracking-wide text-[#5b4a42] md:text-sm">
-          Handmade luxury gifts • Custom orders available in Greece & Cyprus
+          <T text="Handmade luxury gifts • Custom orders available in Greece & Cyprus" />
         </div>
 
         <div className="border-b border-[#eadccc]">
@@ -175,14 +176,14 @@ export default function CustomerMenu() {
                         href="/login"
                         className="rounded-xl bg-[#2b211d] px-4 py-3 text-center text-sm font-semibold text-white"
                       >
-                        Login
+                        <T text="Login" />
                       </a>
 
                       <a
                         href="/login"
                         className="rounded-xl border border-[#d8c7b4] px-4 py-3 text-center text-sm font-semibold"
                       >
-                        Register
+                        <T text="Register" />
                       </a>
                     </div>
                   ) : (
@@ -195,14 +196,14 @@ export default function CustomerMenu() {
                         href="/account"
                         className="block rounded-xl border border-[#d8c7b4] px-4 py-3 text-sm font-semibold"
                       >
-                        My Account
+                        <T text="My Account" />
                       </a>
 
                       <button
                         onClick={logout}
                         className="w-full rounded-xl bg-[#2b211d] px-4 py-3 text-sm font-semibold text-white"
                       >
-                        Logout
+                        <T text="Logout" />
                       </button>
                     </div>
                   )}
@@ -217,19 +218,19 @@ export default function CustomerMenu() {
             <MegaCategoryMenu />
 
             <a href="/custom" className="hover:text-[#b08a5b]">
-              Custom
+              <T text="Custom" />
             </a>
 
             <a href="/favorites" className="hover:text-[#b08a5b]">
-              Favorites
+              <T text="Favorites" />
             </a>
 
             <a href="/contact" className="hover:text-[#b08a5b]">
-              Contact
+              <T text="Contact" />
             </a>
 
             <a href="/messages" className="relative hover:text-[#b08a5b]">
-              Messages
+              <T text="Messages" />
               {messageCount > 0 && (
                 <span className="ml-2 rounded-full bg-[#d56c8c] px-2 py-0.5 text-xs text-white">
                   {messageCount}
@@ -238,7 +239,7 @@ export default function CustomerMenu() {
             </a>
 
             <a href={email ? "/account" : "/login"} className="hover:text-[#b08a5b]">
-              My Orders
+              <T text="My Orders" />
             </a>
           </div>
         </nav>
@@ -292,8 +293,8 @@ export default function CustomerMenu() {
             <MobileCategoryAccordion />
 
             <nav className="mt-8 flex flex-col gap-5 text-lg">
-              <a href="/custom">Create Your Own</a>
-              <a href="/contact">Contact</a>
+              <a href="/custom"><T text="Create Your Own" /></a>
+              <a href="/contact"><T text="Contact" /></a>
             </nav>
 
             <div className="mt-5">
