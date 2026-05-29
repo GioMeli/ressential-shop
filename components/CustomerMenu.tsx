@@ -9,8 +9,6 @@ import MegaCategoryMenu from "@/components/MegaCategoryMenu";
 import MobileCategoryAccordion from "@/components/MobileCategoryAccordion";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import LanguageSelector from "@/components/LanguageSelector";
-import { useLanguage } from "@/hooks/useLanguage";
-import { t } from "@/lib/translations";
 import T from "@/components/T";
 
 export default function CustomerMenu() {
@@ -23,7 +21,6 @@ export default function CustomerMenu() {
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
 
-  const language = useLanguage();
 
   useEffect(() => {
     async function loadUserAndCounts() {
@@ -293,8 +290,13 @@ export default function CustomerMenu() {
             <MobileCategoryAccordion />
 
             <nav className="mt-8 flex flex-col gap-5 text-lg">
-              <a href="/custom"><T text="Create Your Own" /></a>
-              <a href="/contact"><T text="Contact" /></a>
+              <a href="/custom">
+                <T text="Create Your Own" />
+              </a>
+
+              <a href="/contact">
+                <T text="Contact" />
+              </a>
             </nav>
 
             <div className="mt-5">
@@ -324,7 +326,9 @@ export default function CustomerMenu() {
             className="ml-auto h-full w-[88%] max-w-sm overflow-y-auto bg-[#fbf7f1] p-6 shadow-2xl"
           >
             <div className="mb-6 flex items-center justify-between border-b border-[#eadccc] pb-5">
-              <h2 className="text-xl font-semibold">Search</h2>
+              <h2 className="text-xl font-semibold">
+                <T text="Search" />
+              </h2>
 
               <button
                 onClick={() => setMobileSearchOpen(false)}

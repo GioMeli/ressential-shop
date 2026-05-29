@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import LanguageSelector from "@/components/LanguageSelector";
+import { useLanguage } from "@/hooks/useLanguage";
+import { t } from "@/lib/translations";
+import T from "@/components/T";
 
 type Category = {
   id: string;
@@ -60,7 +64,7 @@ export default function MegaCategoryMenu() {
   return (
     <div className="group relative">
       <button className="hover:text-[#b08a5b]">
-        Categories
+        <T text="Categories" />
       </button>
 
       <div className="invisible absolute left-1/2 top-full z-50 mt-4 w-[920px] -translate-x-1/2 rounded-[2rem] border border-[#eadccc] bg-white p-8 opacity-0 shadow-2xl transition-all duration-200 group-hover:visible group-hover:opacity-100">
