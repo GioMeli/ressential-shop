@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CustomerMenu from "@/components/CustomerMenu";
 import { FavoriteItem, getFavorites, removeFavorite } from "@/lib/favorites";
 import { addToCart } from "@/lib/cart";
+import T from "@/components/T";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
@@ -86,7 +87,7 @@ export default function FavoritesPage() {
                     }
                     className="mt-3 w-full rounded-full bg-[#2b211d] px-3 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white"
                   >
-                    Add to Basket
+                   <T text="Add to Basket" />
                   </button>
 
                   <button

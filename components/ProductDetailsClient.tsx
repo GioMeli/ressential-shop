@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import CustomerNavbar from "@/components/CustomerMenu";
 import { addToCart } from "@/lib/cart";
 import { supabase } from "@/lib/supabase";
+import T from "@/components/T";
+
 
 type Product = {
   id: string;
@@ -369,7 +371,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                   onClick={handleAddToBasket}
                   className="flex-1 rounded-full bg-[#2b211d] px-6 py-4 text-xs font-semibold uppercase tracking-widest text-white transition hover:opacity-90"
                 >
-                  Add to Basket
+                  <T text="Add to Basket" />
                 </button>
               </div>
 

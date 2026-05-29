@@ -6,6 +6,8 @@ import { supabase } from "@/lib/supabase";
 import { addToCart } from "@/lib/cart";
 import CustomerNavbar from "@/components/CustomerMenu";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
+import T from "@/components/T";
+
 
 type Category = {
   id: string;
@@ -204,7 +206,7 @@ function ProductCard({ product }: { product: Product }) {
             }
             className="mx-auto mt-4 block rounded-full bg-[#2b211d] px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-white md:px-6"
           >
-            Add to Basket
+            <T text="Add to Basket" />
           </button>
         </div>
       </div>
@@ -322,7 +324,7 @@ function ProductCard({ product }: { product: Product }) {
                 onClick={handleAddCustomToBasket}
                 className="mt-8 w-full rounded-full bg-[#2b211d] px-8 py-4 text-sm font-semibold uppercase tracking-widest text-white"
               >
-                Add to Basket
+                <T text="Add to Basket" />
               </button>
             </div>
           </div>
@@ -863,7 +865,7 @@ function ShopContent() {
 
             <div className="mt-0 bg-[#ead8cf] px-4 py-4 text-center md:mt-5 md:px-5 md:py-6">
               <p className="font-serif text-2xl leading-snug text-[#2b211d] md:text-5xl">
-                Handmade pieces for meaningful moments
+                <T text="Handmade pieces for meaningful moments" />
               </p>
             </div>
 

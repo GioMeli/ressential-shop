@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { addToCart } from "@/lib/cart";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
+import T from "@/components/T";
 
 type Product = {
   id: string;
@@ -172,7 +173,7 @@ export default function FeaturedProductsSlider() {
                       }}
                       className="mx-auto mt-4 block rounded-full bg-[#2b211d] px-6 py-3 text-[10px] font-semibold uppercase tracking-widest text-white"
                     >
-                      Add to Basket
+                      <T text="Add to Basket" />
                     </button>
                   </div>
                 </div>

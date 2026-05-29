@@ -8,6 +8,9 @@ import SmartSearch from "@/components/SmartSearch";
 import MegaCategoryMenu from "@/components/MegaCategoryMenu";
 import MobileCategoryAccordion from "@/components/MobileCategoryAccordion";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import LanguageSelector from "@/components/LanguageSelector";
+import { useLanguage } from "@/hooks/useLanguage";
+import { t } from "@/lib/translations";
 
 export default function CustomerMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,6 +21,8 @@ export default function CustomerMenu() {
   const [cartCount, setCartCount] = useState(0);
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
+
+  const language = useLanguage();
 
   useEffect(() => {
     async function loadUserAndCounts() {
@@ -114,6 +119,10 @@ export default function CustomerMenu() {
               />
               <span>Ressential</span>
             </a>
+
+            <div className="hidden md:block">
+            <LanguageSelector />
+          </div>
 
             <button
               onClick={() => setMobileSearchOpen(true)}
@@ -286,6 +295,10 @@ export default function CustomerMenu() {
               <a href="/custom">Create Your Own</a>
               <a href="/contact">Contact</a>
             </nav>
+
+            <div className="mt-5">
+              <LanguageSelector />
+            </div>
 
             <a
               href="https://www.instagram.com/ressential_experience/"
