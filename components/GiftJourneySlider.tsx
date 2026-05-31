@@ -1,20 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import T from "@/components/T";
 
 const steps = [
   {
-    number: "01",
+    number: "1",
     title: "Choose",
     text: "Select the handmade product that fits the occasion.",
   },
   {
-    number: "02",
+    number: "2",
     title: "Personalize",
     text: "Add names, colors, dates or special details.",
   },
   {
-    number: "03",
+    number: "3",
     title: "Gift",
     text: "Receive a meaningful creation ready to offer.",
   },
@@ -50,11 +51,11 @@ export default function GiftJourneySlider() {
 
         <div className="mx-auto max-w-6xl px-12 text-center">
           <p className="text-[10px] uppercase tracking-[0.35em] text-[#b08a5b] md:text-xs">
-            Your handmade gift journey
+            <T text="Your handmade gift journey" />
           </p>
 
           <h2 className="mt-3 text-2xl font-semibold md:text-5xl">
-            From idea to meaningful gift
+            <T text="From idea to meaningful gift" />
           </h2>
 
           {/* MOBILE */}
@@ -113,7 +114,7 @@ export default function GiftJourneySlider() {
             href="/shop"
             className="mt-6 inline-block rounded-full bg-[#2b211d] px-7 py-3 text-xs font-semibold uppercase tracking-widest text-white"
           >
-            Start Shopping
+            <T text="Start Shopping" />
           </a>
         </div>
 

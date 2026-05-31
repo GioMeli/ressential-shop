@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import T from "@/components/T";
 
 type Category = {
   id: string;
@@ -49,7 +50,7 @@ export default function MobileCategoryAccordion() {
   return (
     <div className="mt-8 border-t border-[#eadccc] pt-6">
       <p className="mb-5 text-xs uppercase tracking-[0.3em] text-[#b08a5b]">
-        Categories
+        <T text="Categories" />
       </p>
 
       <div className="space-y-1">

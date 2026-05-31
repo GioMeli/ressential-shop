@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import T from "@/components/T";
 
 type Product = {
   id: string;
@@ -49,7 +50,7 @@ export default function BestSellerSlider() {
             </p>
 
             <h2 className="mt-2 text-3xl font-semibold md:text-5xl">
-              Most loved creations 🔥
+              <T text="Most loved creations 🔥" />
             </h2>
           </div>
 

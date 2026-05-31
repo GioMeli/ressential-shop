@@ -77,11 +77,11 @@ export default function FeaturedProductsSlider() {
       <div className="mx-auto max-w-[1700px] px-3 md:px-8">
         <div className="mb-8 text-center">
           <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-            Featured Products
+            <T text="Featured Products" />
           </p>
 
           <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
-            Selected handmade pieces
+            <T text="Selected handmade pieces" />
           </h2>
         </div>
 
@@ -195,7 +195,7 @@ export default function FeaturedProductsSlider() {
             href="/shop"
             className="inline-block rounded-full border border-[#b08a5b] px-7 py-3 text-xs font-semibold uppercase tracking-widest text-[#2b211d]"
           >
-            View all products
+            <T text="View all products" />
           </a>
         </div>
       </div>

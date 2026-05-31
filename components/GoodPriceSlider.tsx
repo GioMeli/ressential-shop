@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { addToCart } from "@/lib/cart";
+import T from "@/components/T";
 
 type Product = {
   id: string;
@@ -119,7 +120,7 @@ export default function GoodPriceSlider() {
                       }}
                       className="mt-3 w-full rounded-full bg-[#2b211d] px-4 py-3 text-[10px] font-semibold uppercase tracking-widest text-white"
                     >
-                      Add
+                      <T text="Add" />
                     </button>
                   </div>
                 </div>

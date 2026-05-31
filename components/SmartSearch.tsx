@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import T from "@/components/T";
 
 type ProductResult = {
   id: string;
@@ -165,14 +166,14 @@ export default function SmartSearch({ mobile = false }: { mobile?: boolean }) {
         >
           {!hasResults && (
             <div className="p-4 text-center text-sm text-[#6f625b]">
-              No direct results. Press Enter to search all products.
+              <T text="No direct results. Press Enter to search all products." />
             </div>
           )}
 
           {products.length > 0 && (
             <div>
               <p className="mb-3 text-xs uppercase tracking-[0.25em] text-[#b08a5b]">
-                Products
+                <T text="Products" />
               </p>
 
               <div className="space-y-3">
@@ -219,7 +220,7 @@ export default function SmartSearch({ mobile = false }: { mobile?: boolean }) {
           {categories.length > 0 && (
             <div className="mt-5">
               <p className="mb-3 text-xs uppercase tracking-[0.25em] text-[#b08a5b]">
-                Categories
+                <T text="Categories" />
               </p>
 
               <div className="space-y-2">
@@ -239,7 +240,7 @@ export default function SmartSearch({ mobile = false }: { mobile?: boolean }) {
           {subcategories.length > 0 && (
             <div className="mt-5">
               <p className="mb-3 text-xs uppercase tracking-[0.25em] text-[#b08a5b]">
-                Subcategories
+                <T text="Subcategories" />
               </p>
 
               <div className="space-y-2">
@@ -259,7 +260,7 @@ export default function SmartSearch({ mobile = false }: { mobile?: boolean }) {
           {filteredPages.length > 0 && (
             <div className="mt-5">
               <p className="mb-3 text-xs uppercase tracking-[0.25em] text-[#b08a5b]">
-                Pages
+                <T text="Pages" />
               </p>
 
               <div className="space-y-2">
@@ -284,7 +285,7 @@ export default function SmartSearch({ mobile = false }: { mobile?: boolean }) {
             }
             className="mt-5 w-full rounded-full bg-[#2b211d] px-5 py-3 text-xs font-semibold uppercase tracking-widest text-white"
           >
-            Search all products
+            <T text="Search all products" />
           </button>
         </div>
       )}

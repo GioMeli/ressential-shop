@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import T from "@/components/T";
 
 const collections = [
   "Soy Candles",
@@ -49,7 +50,7 @@ export default function CollectionNameSlider() {
 
         <div className="mx-auto max-w-6xl px-14 text-center">
           <p className="text-xs uppercase tracking-[0.35em] text-[#8a5f47]">
-            Explore by collection
+            <T text="Explore by collection" />
           </p>
 
           {/* Mobile: one item only */}

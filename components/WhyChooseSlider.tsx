@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import T from "@/components/T";
 
 const benefits = [
-  "Handmade Quality",
-  "Custom Details",
-  "Elegant Gifting",
-  "Direct Support",
-  "Premium Finish",
-  "Made With Emotion",
+  <T text="Handmade Quality" />,
+  <T text="Custom Details" />,
+  <T text="Elegant Gifting" />,
+  <T text="Direct Support" />,
+  <T text="Premium Finish" />,
+  <T text="Made With Emotion" />,
 ];
 
 export default function WhyChooseSlider() {
@@ -41,7 +42,7 @@ export default function WhyChooseSlider() {
 
         <div className="mx-auto max-w-6xl px-14 text-center">
           <p className="text-xs uppercase tracking-[0.35em] text-[#d6b488]">
-            Why customers choose Ressential
+            <T text="Why customers choose Ressential" />
           </p>
 
           <div className="mt-8 grid grid-cols-1 gap-2 md:grid-cols-3 md:items-center">

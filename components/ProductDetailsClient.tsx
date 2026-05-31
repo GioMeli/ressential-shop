@@ -145,11 +145,11 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
       <section className="mx-auto max-w-[1600px] px-3 py-5 md:px-8 md:py-10">
         <div className="mb-5 hidden text-sm text-[#6f625b] md:block">
           <a href="/" className="hover:text-[#2b211d]">
-            Home
+            <T text="Home" />
           </a>
           <span className="mx-2">›</span>
           <a href="/shop" className="hover:text-[#2b211d]">
-            Shop
+            <T text="Shop" />
           </a>
           <span className="mx-2">›</span>
           <a
@@ -284,18 +284,18 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
               {product.is_customizable && (
                 <div className="mt-7 bg-[#fbf7f1] p-5 md:p-6">
                   <h2 className="text-2xl font-semibold">
-                    Customize your product
+                    <T text="Customize your product" />
                   </h2>
 
                   <p className="mt-2 text-sm leading-6 text-[#6f625b]">
-                    Add the available custom details below. The admin can contact
-                    you if anything needs confirmation.
+                    <T text="Add the available custom details below. The admin can contact
+                    you if anything needs confirmation." />
                   </p>
 
                   {product.allow_custom_text && (
                     <div className="mt-5">
                       <label className="mb-2 block text-sm font-semibold">
-                        Name or phrase
+                        <T text="Name or phrase" />
                       </label>
 
                       <input
@@ -310,7 +310,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                   {product.allow_color_choice && (
                     <div className="mt-5">
                       <label className="mb-2 block text-sm font-semibold">
-                        Color choice
+                        <T text="Color choice" />
                       </label>
 
                       <select
@@ -379,7 +379,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                 href="/messages"
                 className="mt-4 block rounded-full border border-[#b08a5b] px-6 py-4 text-center text-xs font-semibold uppercase tracking-widest"
               >
-                Ask about this product
+                <T text="Ask about this product" />
               </a>
             </div>
           </section>
@@ -413,10 +413,10 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
           <section className="mt-12 border-t border-[#eadccc] pt-10">
             <div className="mb-7 text-center">
               <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-                You may also like
+                <T text="You may also like" />
               </p>
               <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
-                Related handmade pieces
+                <T text="Related handmade pieces" />
               </h2>
             </div>
 

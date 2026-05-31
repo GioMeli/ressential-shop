@@ -247,7 +247,7 @@ function ProductCard({ product }: { product: Product }) {
               {product.allow_custom_text && (
                 <div className="mt-6">
                   <label className="mb-2 block text-sm font-semibold">
-                    Name or phrase
+                    <T text="Name or phrase" />
                   </label>
 
                   <input
@@ -296,7 +296,7 @@ function ProductCard({ product }: { product: Product }) {
 
               <div className="mt-6">
                 <label className="mb-2 block text-sm font-semibold">
-                  Quantity
+                  <T text="Quantity" />
                 </label>
 
                 <div className="flex w-fit items-center overflow-hidden rounded-xl border border-[#ddd0c0]">
@@ -391,19 +391,19 @@ function FilterPanel({
     <div className="space-y-0 bg-white">
       <div className="border-b border-[#eadccc] p-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Filters</h2>
+          <h2 className="text-xl font-semibold"><T text="Filters" /></h2>
 
           <button
             onClick={clearFilters}
             className="text-xs font-semibold uppercase tracking-widest text-[#b08a5b]"
           >
-            Clear
+            <T text="Clear" />
           </button>
         </div>
       </div>
 
       <div className="border-b border-[#eadccc] p-5">
-        <p className="mb-4 font-semibold">Categories</p>
+        <p className="mb-4 font-semibold"><T text="Categories" /></p>
 
         <div className="space-y-1">
           <button
@@ -419,7 +419,7 @@ function FilterPanel({
                 : "hover:bg-[#f8f3ed]"
             }`}
           >
-            All Categories
+            <T text="All Categories" />
           </button>
 
           {categories.map((category) => {
@@ -478,7 +478,7 @@ function FilterPanel({
                           : "text-[#6f625b]"
                       }`}
                     >
-                      View all {category.title}
+                      <T text="View All" /> {category.title}
                     </button>
 
                     {categorySubcategories.map((subcategory, index) => (
@@ -507,7 +507,7 @@ function FilterPanel({
       </div>
 
       <div className="border-b border-[#eadccc] p-5">
-        <p className="mb-4 font-semibold">Badge</p>
+        <p className="mb-4 font-semibold"><T text="Badge" /></p>
 
         <div className="space-y-3">
           <label className="flex cursor-pointer items-center gap-3 text-sm">
@@ -516,7 +516,7 @@ function FilterPanel({
               checked={selectedBadge === "all"}
               onChange={() => setSelectedBadge("all")}
             />
-            All Badges
+            <T text="All Badges" />
           </label>
 
           {availableBadges.map((badge) => (
@@ -536,7 +536,7 @@ function FilterPanel({
       </div>
 
       <div className="border-b border-[#eadccc] p-5">
-        <p className="mb-4 font-semibold">Price</p>
+        <p className="mb-4 font-semibold"><T text="Price" /></p>
 
         <div className="grid grid-cols-2 gap-3">
           <input
@@ -564,7 +564,7 @@ function FilterPanel({
             checked={bestSellerOnly}
             onChange={(e) => setBestSellerOnly(e.target.checked)}
           />
-          Best Sellers
+          <T text="Best Sellers" />
         </label>
 
         <label className="flex cursor-pointer items-center gap-3 text-sm">
@@ -573,7 +573,7 @@ function FilterPanel({
             checked={customizableOnly}
             onChange={(e) => setCustomizableOnly(e.target.checked)}
           />
-          Customizable Products
+          <T text="Customizable Products" />
         </label>
       </div>
     </div>
@@ -665,7 +665,7 @@ function ShopContent() {
   const pageTitle =
     activeSubcategory?.title ||
     activeCategory?.title ||
-    (searchQuery ? `Search: ${searchQuery}` : "All Products");
+    (searchQuery ? `<T text="Search:" /> ${searchQuery}` : <T text="All Products" />);
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
@@ -847,14 +847,14 @@ function ShopContent() {
               onClick={() => setSortOpen(true)}
               className="flex flex-1 items-center justify-center gap-2 border-r border-[#eadccc] text-sm"
             >
-              ☰ Sort
+              <T text="☰ Sort" />
             </button>
 
             <button
               onClick={() => setFilterOpen(true)}
               className="flex flex-1 items-center justify-center gap-2 text-sm"
             >
-              ⚱ Filter
+              <T text="⚱ Filter" />
             </button>
           </div>
 
@@ -870,13 +870,13 @@ function ShopContent() {
             </div>
 
             <p className="mt-3 text-sm text-[#6f625b]">
-              {filteredProducts.length} products found
+              {filteredProducts.length} <T text="products found" />
             </p>
           </div>
 
           {loading && (
             <div className="mt-12 rounded-[2rem] bg-[#f8f3ed] p-10 text-center">
-              Loading products...
+              <T text="Loading products..." />
             </div>
           )}
 
@@ -892,7 +892,7 @@ function ShopContent() {
             <div className="mt-12 rounded-[2rem] bg-[#f8f3ed] p-10 text-center">
               <h2 className="text-3xl font-semibold">No products found</h2>
               <p className="mt-3 text-[#6f625b]">
-                Try another category, subcategory or filter.
+                <T text="Try another category, subcategory or filter." />
               </p>
             </div>
           )}
@@ -916,7 +916,7 @@ function ShopContent() {
                 onClick={() => setFilterOpen(false)}
                 className="w-full rounded-full bg-[#2b211d] px-6 py-4 text-xs font-semibold uppercase tracking-widest text-white"
               >
-                Show Products
+                <T text="Show Products" />
               </button>
             </div>
           </aside>
@@ -963,7 +963,7 @@ export default function ShopPage() {
     <Suspense
       fallback={
         <main className="min-h-screen bg-[#f8f3ed] p-10 text-center">
-          Loading shop...
+          <T text="Loading shop..." />
         </main>
       }
     >

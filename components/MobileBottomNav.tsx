@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { getCart } from "@/lib/cart";
+import LanguageSelector from "@/components/LanguageSelector";
+import T from "@/components/T";
 
 type Profile = {
   display_name: string | null;
@@ -114,21 +116,21 @@ export default function MobileBottomNav() {
                 href="/account"
                 className="block rounded-xl px-4 py-3 text-sm hover:bg-[#f8f3ed]"
               >
-                My Orders
+                <T text="My Orders" />
               </a>
 
               <a
                 href="/account"
                 className="block rounded-xl px-4 py-3 text-sm hover:bg-[#f8f3ed]"
               >
-                Manage Account
+                <T text="Manage Account" />
               </a>
 
               <button
                 onClick={logout}
                 className="mt-2 w-full rounded-full bg-[#2b211d] px-4 py-3 text-xs font-semibold uppercase tracking-widest text-white"
               >
-                Logout
+                <T text="Log Out" />
               </button>
             </>
           ) : (
@@ -137,14 +139,14 @@ export default function MobileBottomNav() {
                 href="/login"
                 className="block rounded-xl px-4 py-3 text-sm hover:bg-[#f8f3ed]"
               >
-                Login / Register
+                <T text="Login / Register" />
               </a>
 
               <a
                 href="/login"
                 className="block rounded-xl px-4 py-3 text-sm hover:bg-[#f8f3ed]"
               >
-                My Orders
+                <T text="My Orders" />
               </a>
             </>
           )}

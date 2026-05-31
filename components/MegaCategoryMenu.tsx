@@ -71,7 +71,7 @@ export default function MegaCategoryMenu() {
         <div className="grid grid-cols-[260px_1fr] gap-10">
           <div className="border-r border-[#eadccc] pr-6">
             <h3 className="mb-5 text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-              Collections
+              <T text="Collections" />
             </h3>
 
             <div className="space-y-2">
@@ -97,7 +97,7 @@ export default function MegaCategoryMenu() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-                  Explore
+                  <T text="Explore" />
                 </p>
 
                 <h2 className="mt-2 text-3xl font-semibold">
@@ -113,7 +113,7 @@ export default function MegaCategoryMenu() {
                 href={`/shop?category=${activeCategory}`}
                 className="rounded-full border border-[#d8c7b4] px-5 py-3 text-xs font-semibold uppercase tracking-widest"
               >
-                View All
+                <T text="View All" />
               </a>
             </div>
 
@@ -130,7 +130,7 @@ export default function MegaCategoryMenu() {
                     </p>
 
                     <p className="mt-2 text-sm text-[#6f625b]">
-                      Explore handmade creations
+                      <T text="Explore handmade creations" />
                     </p>
                   </a>
                 )

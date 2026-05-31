@@ -13,6 +13,7 @@ import WhyChooseSlider from "@/components/WhyChooseSlider";
 import GiftJourneySlider from "@/components/GiftJourneySlider";
 import BestSellerSlider from "@/components/BestSellerSlider";
 import OccasionTagsSlider from "@/components/OccasionTagsSlider";
+import T from "@/components/T";
 
 const categoryTiles = [
   {
@@ -42,12 +43,12 @@ const categoryTiles = [
 ];
 
 const quickLinks = [
-  "Birthday Gifts",
-  "Wedding Gifts",
-  "Baptism Keepsakes",
-  "Home Decor",
-  "Custom Names",
-  "Premium Packaging",
+  <T text="Birthday Gifts" />,
+  <T text="Wedding Gifts" />,
+  <T text="Baptism Keepsakes" />,
+  <T text="Home Decor" />,
+  <T text="Custom Names" />,
+  <T text="Premium Packaging" />,
 ];
 
 export default function HomePage() {
