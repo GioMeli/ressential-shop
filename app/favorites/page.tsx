@@ -24,19 +24,19 @@ export default function FavoritesPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-10 md:px-6">
         <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-          Saved Products
+          <T text="Saved Products" />
         </p>
 
         <h1 className="mt-3 text-4xl font-semibold md:text-6xl">
-          My Favorites
+          <T text="My Favorites" />
         </h1>
 
         {favorites.length === 0 ? (
           <div className="mt-10 rounded-[2rem] bg-white p-10 text-center shadow-sm">
-            <h2 className="text-2xl font-semibold">No favorites yet</h2>
+            <h2 className="text-2xl font-semibold"><T text="No favorites yet" /></h2>
 
             <a href="/shop" className="mt-6 inline-block underline">
-              Explore products
+              <T text="Explore products" />
             </a>
           </div>
         ) : (
@@ -94,7 +94,7 @@ export default function FavoritesPage() {
                     onClick={() => handleRemove(product.id)}
                     className="mt-3 text-xs font-semibold uppercase tracking-widest text-red-700"
                   >
-                    Remove
+                    <T text="Remove" />
                   </button>
                 </div>
               </div>

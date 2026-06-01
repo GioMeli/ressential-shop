@@ -1,4 +1,5 @@
 import CustomerNavbar from "@/components/CustomerMenu";
+import T from "@/components/T";
 
 export default function OrderSuccessPage() {
   return (
@@ -12,33 +13,33 @@ export default function OrderSuccessPage() {
           </div>
 
           <p className="mt-8 text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-            Order Request Received
+            <T text="Order Request Received" />
           </p>
 
           <h1 className="mt-4 text-4xl font-semibold md:text-6xl">
-            Thank you for your order.
+            <T text="Thank you for your order." />
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl leading-8 text-[#6f625b]">
-            Your handmade order request has been submitted successfully.
+            <T text="Your handmade order request has been submitted successfully.
             Ressential will review the details, confirm delivery and payment
-            information, and update you about the next steps.
+            information, and update you about the next steps." />
           </p>
 
           <div className="mt-8 grid gap-4 rounded-[2rem] bg-[#fbf7f1] p-6 text-left text-sm text-[#6f625b] md:grid-cols-3">
             <div>
-              <p className="font-semibold text-[#2b211d]">1. Review</p>
-              <p className="mt-2">Your order details are checked carefully.</p>
+              <p className="font-semibold text-[#2b211d]"><T text="1. Review" /></p>
+              <p className="mt-2"><T text="Your order details are checked carefully." /></p>
             </div>
 
             <div>
-              <p className="font-semibold text-[#2b211d]">2. Confirmation</p>
-              <p className="mt-2">Delivery and payment details are confirmed.</p>
+              <p className="font-semibold text-[#2b211d]"><T text="2. Confirmation" /></p>
+              <p className="mt-2"><T text="Delivery and payment details are confirmed." /></p>
             </div>
 
             <div>
-              <p className="font-semibold text-[#2b211d]">3. Preparation</p>
-              <p className="mt-2">Your handmade item is prepared with care.</p>
+              <p className="font-semibold text-[#2b211d]"><T text="3. Preparation" /></p>
+              <p className="mt-2"><T text="Your handmade item is prepared with care." /></p>
             </div>
           </div>
 
@@ -47,21 +48,21 @@ export default function OrderSuccessPage() {
               href="/shop"
               className="rounded-full bg-[#2b211d] px-6 py-4 text-xs font-semibold uppercase tracking-widest text-white"
             >
-              Continue Shopping
+              <T text="Continue Shopping" />
             </a>
 
             <a
               href="/messages"
               className="rounded-full border border-[#b08a5b] px-6 py-4 text-xs font-semibold uppercase tracking-widest"
             >
-              Messages
+              <T text="Messages" />
             </a>
 
             <a
               href="/account"
               className="rounded-full border border-[#b08a5b] px-6 py-4 text-xs font-semibold uppercase tracking-widest"
             >
-              My Orders
+              <T text="My Orders" />
             </a>
           </div>
         </div>

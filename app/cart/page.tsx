@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { CartItem, getCart, removeFromCart } from "@/lib/cart";
 import CustomerNavbar from "@/components/CustomerMenu";
+import T from "@/components/T";
 
 export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -30,28 +31,28 @@ export default function CartPage() {
 
       <section className="mx-auto max-w-[1600px] px-4 py-8 md:px-8 md:py-12">
         <div className="mb-8 text-center text-sm text-[#6f625b]">
-          Cart <span className="mx-2">›</span>
+          <T text="Cart" /> <span className="mx-2">›</span>
           <strong className="text-[#2b211d]">Place Order</strong>
           <span className="mx-2">›</span>
-          Payment <span className="mx-2">›</span>
-          Complete
+          <T text="Payment" /> <span className="mx-2">›</span>
+          <T text="Complete" />
         </div>
 
         <div className="mb-5 border border-[#b7d7c0] bg-[#f1fbf4] px-5 py-4 text-sm font-semibold text-[#166534]">
-          ✓ Secure handmade checkout • Order request before payment
+          <T text="✓ Secure handmade checkout • Order request before payment" />
         </div>
 
         {cart.length === 0 ? (
           <div className="mx-auto max-w-2xl bg-white p-10 text-center">
-            <h1 className="text-4xl font-semibold">Your basket is empty</h1>
+            <h1 className="text-4xl font-semibold"><T text="Your basket is empty" /></h1>
             <p className="mt-4 text-[#6f625b]">
-              Explore handmade gifts, candles and custom creations.
+              <T text="Explore handmade gifts, candles and custom creations." />
             </p>
             <a
               href="/shop"
               className="mt-8 inline-block rounded-full bg-[#2b211d] px-8 py-4 text-xs font-semibold uppercase tracking-widest text-white"
             >
-              Start Shopping
+              <T text="Start Shopping" />
             </a>
           </div>
         ) : (
@@ -59,7 +60,7 @@ export default function CartPage() {
             <div>
               <div className="bg-white px-5 py-5">
                 <h1 className="text-2xl font-bold md:text-3xl">
-                  All Items ({totalItems})
+                  <T text="All Items" /> ({totalItems})
                 </h1>
               </div>
 
@@ -90,7 +91,7 @@ export default function CartPage() {
 
                           {item.templateDescription && (
                             <p className="mt-2 rounded-xl bg-[#f8f3ed] p-3">
-                              Custom Details: {item.templateDescription}
+                              <T text="Custom Details:" /> {item.templateDescription}
                             </p>
                           )}
                         </div>
@@ -99,7 +100,7 @@ export default function CartPage() {
                           onClick={() => handleRemove(item.id)}
                           className="mt-4 text-xs font-semibold uppercase tracking-widest text-red-700"
                         >
-                          Remove
+                          <T text="Remove" />
                         </button>
                       </div>
 
@@ -117,19 +118,19 @@ export default function CartPage() {
               </div>
 
               <div className="mt-5 bg-white p-5">
-                <p className="font-semibold">Standard Delivery</p>
+                <p className="font-semibold"><T text="Standard Delivery" /></p>
                 <p className="mt-2 text-sm text-[#6f625b]">
-                  Delivery cost and courier options will be confirmed before final payment.
+                  <T text="Delivery cost and courier options will be confirmed before final payment." />
                 </p>
               </div>
             </div>
 
             <aside className="h-fit bg-white p-6 shadow-sm lg:sticky lg:top-32">
-              <h2 className="text-2xl font-bold">Order Summary</h2>
+              <h2 className="text-2xl font-bold"><T text="Order Summary" /></h2>
 
               <div className="mt-6 space-y-4 text-sm">
                 <div className="flex justify-between">
-                  <span>Subtotal ({totalItems} items)</span>
+                  <span><T text="Subtotal" /> ({totalItems} items)</span>
                   <strong>€{subtotal.toFixed(2)}</strong>
                 </div>
 
@@ -140,7 +141,7 @@ export default function CartPage() {
 
                 <div className="border-t border-[#eadccc] pt-4">
                   <div className="flex justify-between text-xl">
-                    <span className="font-bold">Estimated Total</span>
+                    <span className="font-bold"><T text="Estimated Total" /></span>
                     <strong>€{subtotal.toFixed(2)}</strong>
                   </div>
                 </div>
@@ -150,13 +151,13 @@ export default function CartPage() {
                 href="/checkout"
                 className="mt-8 block bg-[#2b211d] px-6 py-4 text-center text-sm font-semibold uppercase tracking-widest text-white"
               >
-                Checkout Now ({totalItems})
+                <T text="Checkout Now" /> ({totalItems})
               </a>
 
               <div className="mt-6 space-y-4 border-t border-[#eadccc] pt-6 text-sm text-[#6f625b]">
-                <p>✓ Secure order request</p>
-                <p>✓ Handmade products prepared with care</p>
-                <p>✓ Customer support through messages</p>
+                <p><T text="✓ Secure order request" /></p>
+                <p><T text="✓ Handmade products prepared with care" /></p>
+                <p><T text="✓ Customer support through messages" /></p>
               </div>
             </aside>
           </div>
@@ -169,7 +170,7 @@ export default function CartPage() {
             href="/checkout"
             className="block bg-[#2b211d] px-5 py-4 text-center text-sm font-semibold uppercase tracking-widest text-white"
           >
-            Checkout ({totalItems}) • €{subtotal.toFixed(2)}
+            <T text="Checkout" /> ({totalItems}) • €{subtotal.toFixed(2)}
           </a>
         </div>
       )}

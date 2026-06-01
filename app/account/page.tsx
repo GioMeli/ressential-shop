@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import CustomerMenu from "@/components/CustomerMenu";
+import T from "@/components/T";
 
 type OrderItem = {
   name: string;
@@ -116,7 +117,7 @@ export default function AccountPage() {
         <CustomerMenu />
         <div className="flex min-h-[80vh] items-center justify-center">
           <div className="rounded-[2rem] bg-white px-10 py-8 text-lg shadow-sm">
-            Loading account...
+            <T text="Loading account..." />
           </div>
         </div>
       </main>
@@ -130,16 +131,16 @@ export default function AccountPage() {
       <section className="mx-auto max-w-[1500px] px-4 py-8 md:px-8 md:py-14">
         <div className="mb-8">
           <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-            My Account
+            <T text="My Account" />
           </p>
 
           <h1 className="mt-4 text-4xl font-semibold md:text-6xl">
-            Welcome back
+            <T text="Welcome back" />
           </h1>
 
           <p className="mt-4 max-w-2xl text-[#6f625b]">
-            Manage your profile, track your handmade orders and contact
-            Ressential about any request.
+            <T text="Manage your profile, track your handmade orders and contact
+            Ressential about any request." />
           </p>
         </div>
 
@@ -201,21 +202,21 @@ export default function AccountPage() {
                 href="/messages"
                 className="rounded-2xl border border-[#ddd0c0] px-5 py-4 text-center text-sm font-semibold"
               >
-                Open Messages
+                <T text="Open Messages" />
               </a>
 
               <a
                 href="/favorites"
                 className="rounded-2xl border border-[#ddd0c0] px-5 py-4 text-center text-sm font-semibold"
               >
-                View Favorites
+                <T text="View Favorites" />
               </a>
 
               <a
                 href="/shop"
                 className="rounded-2xl border border-[#ddd0c0] px-5 py-4 text-center text-sm font-semibold"
               >
-                Continue Shopping
+                <T text="Continue Shopping" />
               </a>
             </div>
           </aside>
@@ -224,13 +225,13 @@ export default function AccountPage() {
             <div className="flex flex-col gap-4 border-b border-[#eadccc] pb-6 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.35em] text-[#b08a5b]">
-                  Orders
+                  <T text="Orders" />
                 </p>
 
-                <h2 className="mt-3 text-3xl font-semibold">My Orders</h2>
+                <h2 className="mt-3 text-3xl font-semibold"><T text="My Orders" /></h2>
 
                 <p className="mt-2 text-sm text-[#6f625b]">
-                  Track your order status and review product details.
+                  <T text="Track your order status and review product details." />
                 </p>
               </div>
 
@@ -238,23 +239,23 @@ export default function AccountPage() {
                 href="/shop"
                 className="rounded-full border border-[#d8c7b4] px-5 py-3 text-center text-xs font-semibold uppercase tracking-widest"
               >
-                Shop More
+                <T text="Shop More" />
               </a>
             </div>
 
             {orders.length === 0 ? (
               <div className="mt-10 rounded-[2rem] bg-[#faf7f3] p-10 text-center">
-                <h3 className="text-2xl font-semibold">No orders yet</h3>
+                <h3 className="text-2xl font-semibold"><T text="No orders yet" /></h3>
 
                 <p className="mt-3 text-[#6f625b]">
-                  Start exploring handmade products.
+                  <T text="Start exploring handmade products." />
                 </p>
 
                 <a
                   href="/shop"
                   className="mt-6 inline-block rounded-full bg-[#2b211d] px-6 py-4 text-xs font-semibold uppercase tracking-widest text-white"
                 >
-                  Explore Shop
+                  <T text="Explore Shop" />
                 </a>
               </div>
             ) : (
@@ -304,7 +305,7 @@ export default function AccountPage() {
                           <div className="grid gap-5 lg:grid-cols-2">
                             <div className="rounded-[1.5rem] bg-[#fbf7f1] p-5">
                               <h4 className="text-xl font-semibold">
-                                Delivery Details
+                                <T text="Delivery Details" />
                               </h4>
 
                               <div className="mt-4 space-y-2 text-sm text-[#6f625b]">
@@ -323,13 +324,13 @@ export default function AccountPage() {
                                 href="/messages"
                                 className="mt-5 inline-block rounded-full border border-[#b08a5b] px-5 py-3 text-xs font-semibold uppercase tracking-widest"
                               >
-                                Message Admin
+                                <T text="Message Administrator" />
                               </a>
                             </div>
 
                             <div className="rounded-[1.5rem] bg-[#fbf7f1] p-5">
                               <h4 className="text-xl font-semibold">
-                                Products
+                                <T text="Products" />
                               </h4>
 
                               <div className="mt-4 space-y-4">

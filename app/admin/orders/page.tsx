@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import AdminNavbar from "@/components/AdminNavbar";
+import T from "@/components/T";
 
 type OrderItem = {
   name: string;
@@ -222,14 +223,14 @@ export default function AdminOrdersPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-16">
         <p className="mb-3 text-sm uppercase tracking-[0.3em] text-[#b08a5b]">
-          Admin Dashboard
+          <T text="Admin Dashboard" />
         </p>
 
-        <h1 className="text-4xl font-semibold md:text-6xl">Customer Orders</h1>
+        <h1 className="text-4xl font-semibold md:text-6xl"><T text="Customer Orders" /></h1>
 
         <p className="mt-4 max-w-3xl text-[#6f625b]">
-          Manage customer orders, review custom product details, update status,
-          save internal notes and notify customers.
+          <T text="Manage customer orders, review custom product details, update status,
+          save internal notes and notify customers." />
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
@@ -250,13 +251,13 @@ export default function AdminOrdersPage() {
 
         {loading && (
           <div className="mt-10 rounded-[2rem] bg-white p-10 text-center">
-            Loading orders...
+            <T text="Loading Orders..." />
           </div>
         )}
 
         {!loading && filteredOrders.length === 0 && (
           <div className="mt-10 rounded-[2rem] bg-white p-10 text-center">
-            No orders found.
+            <T text="No orders found" />
           </div>
         )}
 
@@ -422,7 +423,7 @@ export default function AdminOrdersPage() {
                       <div className="rounded-[1.5rem] bg-white p-6">
                         <h3 className="text-xl font-semibold">Admin Notes</h3>
                         <p className="mt-2 text-sm text-[#6f625b]">
-                          Internal notes only. Customers cannot see this.
+                          <T text="Internal notes only. Customers cannot see this." />
                         </p>
 
                         <textarea
@@ -441,10 +442,10 @@ export default function AdminOrdersPage() {
 
                       <div className="rounded-[1.5rem] bg-white p-6">
                         <h3 className="text-xl font-semibold">
-                          Tracking / Delivery Note
+                          <T text="Tracking / Delivery Note" />
                         </h3>
                         <p className="mt-2 text-sm text-[#6f625b]">
-                          Placeholder for courier, tracking number or delivery remarks.
+                          <T text="Placeholder for courier, tracking number or delivery remarks." />
                         </p>
 
                         <textarea
@@ -463,10 +464,10 @@ export default function AdminOrdersPage() {
 
                       <div className="rounded-[1.5rem] bg-white p-6">
                         <h3 className="text-xl font-semibold">
-                          Customer Status Message
+                          <T text="Customer Status Message" />
                         </h3>
                         <p className="mt-2 text-sm text-[#6f625b]">
-                          Optional. This will be sent with the next status update.
+                          <T text="Optional. This will be sent with the next status update." />
                         </p>
 
                         <textarea
@@ -497,7 +498,7 @@ export default function AdminOrdersPage() {
                         href={`mailto:${order.customer_email}`}
                         className="rounded-full bg-[#2b211d] px-6 py-4 text-center text-xs font-semibold uppercase tracking-widest text-white"
                       >
-                        Email Customer
+                        Email <T text="Customer" />
                       </a>
                     </div>
                   </div>

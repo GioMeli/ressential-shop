@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import CustomerMenu from "@/components/CustomerMenu";
 import { supabase } from "@/lib/supabase";
+import T from "@/components/T";
 
 type Conversation = {
   id: string;
@@ -252,10 +253,10 @@ export default function MessagesPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-[#b08a5b]">
-                    Messages
+                    <T text="Messages" />
                   </p>
                   <h1 className="mt-2 text-2xl font-semibold">
-                    Conversations
+                    <T text="Conversations" />
                   </h1>
                 </div>
 
@@ -271,7 +272,7 @@ export default function MessagesPage() {
             <div className="h-[calc(78vh-93px)] overflow-y-auto p-3">
               {loading && (
                 <div className="rounded-2xl bg-white p-5 text-center">
-                  Loading...
+                  <T text="Loading..." />
                 </div>
               )}
 
@@ -294,7 +295,7 @@ export default function MessagesPage() {
 
                         <p className="mt-2 line-clamp-2 text-sm text-[#6f625b]">
                           {conversation.last_message ||
-                            "No messages yet. Start the conversation."}
+                            <T text="No messages yet. Start the conversation." />}
                         </p>
                       </div>
 
@@ -358,14 +359,14 @@ export default function MessagesPage() {
                       onClick={closeConversation}
                       className="rounded-full border border-[#d8c7b4] px-4 py-2 text-xs font-semibold uppercase tracking-widest"
                     >
-                      Close
+                      <T text="Close" />
                     </button>
                   ) : (
                     <button
                       onClick={reopenConversation}
                       className="rounded-full bg-[#2b211d] px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white"
                     >
-                      Reopen
+                      <T text="Reopen" />
                     </button>
                   )}
                 </div>
@@ -374,11 +375,11 @@ export default function MessagesPage() {
                   {messages.length === 0 && (
                     <div className="mx-auto mt-10 max-w-md rounded-[2rem] bg-white p-7 text-center shadow-sm">
                       <h3 className="text-2xl font-semibold">
-                        Start this conversation
+                        <T text="Start this conversation" />
                       </h3>
                       <p className="mt-3 text-sm leading-7 text-[#6f625b]">
-                        Write your question about products, custom orders,
-                        delivery or an existing order.
+                        <T text="Write your question about products, custom orders,
+                        delivery or an existing order." />
                       </p>
                     </div>
                   )}
@@ -427,8 +428,8 @@ export default function MessagesPage() {
                 {activeConversation.status === "closed" ? (
                   <div className="border-t border-[#eadccc] bg-white p-4 text-center">
                     <p className="text-sm text-[#6f625b]">
-                      This conversation is closed. Reopen it to send a new
-                      message.
+                      <T text="This conversation is closed. Reopen it to send a new
+                      message." />
                     </p>
                   </div>
                 ) : (
@@ -450,7 +451,7 @@ export default function MessagesPage() {
                       type="submit"
                       className="rounded-full bg-[#2b211d] px-6 py-4 text-xs font-semibold uppercase tracking-widest text-white disabled:opacity-60"
                     >
-                      {sending ? "..." : "Send"}
+                      {sending ? "..." : <T text="Send" />}
                     </button>
                   </form>
                 )}
@@ -459,10 +460,10 @@ export default function MessagesPage() {
               <div className="hidden h-full items-center justify-center text-center md:flex">
                 <div>
                   <h2 className="text-3xl font-semibold">
-                    Select a conversation
+                    <T text="Select a conversation" />
                   </h2>
                   <p className="mt-3 text-[#6f625b]">
-                    Choose a conversation from the side panel.
+                    <T text="Choose a conversation from the side panel." />
                   </p>
                 </div>
               </div>
@@ -477,9 +478,9 @@ export default function MessagesPage() {
             onSubmit={createConversation}
             className="w-full max-w-md rounded-[2rem] bg-white p-7 shadow-2xl"
           >
-            <h2 className="text-2xl font-semibold">New conversation</h2>
+            <h2 className="text-2xl font-semibold"><T text="New conversation" /></h2>
             <p className="mt-2 text-sm text-[#6f625b]">
-              Give this conversation a clear subject.
+              <T text="Give this conversation a clear subject." />
             </p>
 
             <input
@@ -496,14 +497,14 @@ export default function MessagesPage() {
                 onClick={() => setNewConversationOpen(false)}
                 className="rounded-full border border-[#d8c7b4] px-5 py-4 text-xs font-semibold uppercase tracking-widest"
               >
-                Cancel
+                <T text="Cancel" />
               </button>
 
               <button
                 type="submit"
                 className="rounded-full bg-[#2b211d] px-5 py-4 text-xs font-semibold uppercase tracking-widest text-white"
               >
-                Create
+                <T text="Create" />
               </button>
             </div>
           </form>
